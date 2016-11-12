@@ -46,7 +46,7 @@ var universal = {
     srcsetArray: function srcsetArray(originalSrc, originalWidth, options) {
         var srcsetArray = [];
         forEach(universal.widths, function (width) {
-            if (width > originalWidth) return false;
+            if (width >= originalWidth) return false;
             srcsetArray.push(universal.url(originalSrc, Object.assign({}, options, { width: width })) + ' ' + width + 'w');
         });
         srcsetArray.push(universal.url(originalSrc, Object.assign({}, options, { width: originalWidth })) + ' ' + originalWidth + 'w');
