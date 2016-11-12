@@ -22,8 +22,8 @@ describe('tiny.pictures.js', () => {
                 .toBe('https://tiny.pictures/api/example1.jpg?protocol=https&hostname=tiny.pictures&port=1336')
         })
         it('should append options to query string', () => {
-            expect(tiny.pictures.url('https://tiny.pictures/example1.jpg'))
-                .toBe('https://tiny.pictures/api/example1.jpg?protocol=https&hostname=tiny.pictures')
+            expect(tiny.pictures.url('https://tiny.pictures/example1.jpg', {width: 100}))
+                .toBe('https://tiny.pictures/api/example1.jpg?protocol=https&hostname=tiny.pictures&width=100')
         })
     })
 })

@@ -1,8 +1,11 @@
 const urijs = require('urijs')
+const forEach = require('lodash/forEach')
 
 const tiny = {
     pictures: {
-        url: (url) => {
+        url: (url, options) => {
+            if (!options) options = {}
+
             let urlObject = urijs(url).normalize()
 
             const queryObject = urlObject.query(true)
@@ -25,6 +28,10 @@ const tiny = {
             urlObject.port('')
 
             urlObject.path('/api' + urlObject.path())
+
+            forEach(options, (val, key) => {
+                urlObject.addQuery(key, val)
+            })
 
             return urlObject.toString()
         }
