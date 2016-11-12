@@ -30,4 +30,22 @@ describe('universal.js', () => {
                 .toThrow()
         })
     })
+
+    describe('srcsetArray', () => {
+        let url, options
+        beforeEach(() => {
+            url = 'http://tiny.pictures/example1.jpg'
+            options = {quality: 50}
+        })
+
+        it('should build a srcset array', () => {
+            expect(universal.srcsetArray(url, 120, options)).toEqual([
+                universal.url(url, Object.assign({}, options, {width: 10})) + ' 10w',
+                universal.url(url, Object.assign({}, options, {width: 25})) + ' 25w',
+                universal.url(url, Object.assign({}, options, {width: 50})) + ' 50w',
+                universal.url(url, Object.assign({}, options, {width: 100})) + ' 100w',
+                universal.url(url, Object.assign({}, options, {width: 120})) + ' 120w'
+            ])
+        })
+    })
 })

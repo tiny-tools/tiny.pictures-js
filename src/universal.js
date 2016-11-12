@@ -1,7 +1,7 @@
 const urijs = require('urijs')
 const forEach = require('lodash/forEach')
 
-module.exports = {
+const universal = {
     url: (url, options) => {
         if (!options) options = {}
 
@@ -37,5 +37,17 @@ module.exports = {
         })
 
         return urlObject.toString()
-    }
+    },
+    srcsetArray: (originalSrc, originalWidth, options) => {
+        let srcsetArray = []
+        forEach(universal.widths, (width) => {
+            if (width > originalWidth) return false
+            srcsetArray.push(universal.url(originalSrc, Object.assign({}, options, {width: width})) + ' ' + width + 'w')
+        })
+        srcsetArray.push(universal.url(originalSrc, Object.assign({}, options, {width: originalWidth})) + ' ' + originalWidth + 'w')
+        return srcsetArray
+    },
+    widths: [10, 25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3250, 3500, 3750, 4000, 4250, 4500, 4750, 5000]
 }
+
+module.exports = universal
