@@ -3,7 +3,7 @@
 var urijs = require('urijs');
 var forEach = require('lodash/forEach');
 
-module.exports = {
+var universal = {
     url: function url(_url, options) {
         if (!options) options = {};
 
@@ -39,5 +39,17 @@ module.exports = {
         });
 
         return urlObject.toString();
-    }
+    },
+    srcsetArray: function srcsetArray(originalSrc, originalWidth, options) {
+        var srcsetArray = [];
+        forEach(universal.widths, function (width) {
+            if (width > originalWidth) return false;
+            srcsetArray.push(universal.url(originalSrc, Object.assign({}, options, { width: width })) + ' ' + width + 'w');
+        });
+        srcsetArray.push(universal.url(originalSrc, Object.assign({}, options, { width: originalWidth })) + ' ' + originalWidth + 'w');
+        return srcsetArray;
+    },
+    widths: [10, 25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3250, 3500, 3750, 4000, 4250, 4500, 4750, 5000]
 };
+
+module.exports = universal;

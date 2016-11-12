@@ -2,6 +2,8 @@ const urijs = require('urijs')
 const forEach = require('lodash/forEach')
 
 const universal = {
+    protocol: 'https',
+    hostname: 'tiny.pictures',
     url: (url, options) => {
         if (!options) options = {}
 
@@ -20,10 +22,10 @@ const universal = {
         }
 
         urlObject.addQuery('protocol', urlObject.protocol())
-        urlObject.protocol('https')
+        urlObject.protocol(universal.protocol)
 
         urlObject.addQuery('hostname', urlObject.hostname())
-        urlObject.hostname('tiny.pictures')
+        urlObject.hostname(universal.hostname)
 
         if (urlObject.port() != '' && (urlObject.hasQuery('protocol', 'http') && urlObject.port() != 80 || urlObject.hasQuery('protocol', 'https') && urlObject.port() != 443)) {
             urlObject.addQuery('port', urlObject.port())

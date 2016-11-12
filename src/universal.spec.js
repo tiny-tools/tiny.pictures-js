@@ -29,6 +29,16 @@ describe('universal.js', () => {
             expect(() => universal.url('/example1.jpg'))
                 .toThrow()
         })
+        it('should use custom protocol and hostname', () => {
+            const originalProtocol = universal.protocol
+            const originalHostname = universal.hostname
+            universal.protocol = 'http'
+            universal.hostname = 'custom.domain'
+            expect(universal.url('http://tiny.pictures/example1.jpg'))
+                .toBe('http://custom.domain/api/example1.jpg?protocol=http&hostname=tiny.pictures')
+            universal.protocol = originalProtocol
+            universal.hostname = originalHostname
+        })
     })
 
     describe('srcsetArray', () => {
