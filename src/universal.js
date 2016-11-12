@@ -4,6 +4,7 @@ const forEach = require('lodash/forEach')
 const universal = {
     protocol: 'https',
     hostname: 'tiny.pictures',
+    port: '',
     url: (url, options) => {
         if (!options) options = {}
 
@@ -30,7 +31,7 @@ const universal = {
         if (urlObject.port() != '' && (urlObject.hasQuery('protocol', 'http') && urlObject.port() != 80 || urlObject.hasQuery('protocol', 'https') && urlObject.port() != 443)) {
             urlObject.addQuery('port', urlObject.port())
         }
-        urlObject.port('')
+        urlObject.port(universal.port)
 
         urlObject.path('/api' + urlObject.path())
 

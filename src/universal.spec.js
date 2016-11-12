@@ -32,12 +32,15 @@ describe('universal.js', () => {
         it('should use custom protocol and hostname', () => {
             const originalProtocol = universal.protocol
             const originalHostname = universal.hostname
+            const originalPort = universal.port
             universal.protocol = 'http'
             universal.hostname = 'custom.domain'
+            universal.port = 1336
             expect(universal.url('http://tiny.pictures/example1.jpg'))
-                .toBe('http://custom.domain/api/example1.jpg?protocol=http&hostname=tiny.pictures')
+                .toBe('http://custom.domain:1336/api/example1.jpg?protocol=http&hostname=tiny.pictures')
             universal.protocol = originalProtocol
             universal.hostname = originalHostname
+            universal.port = originalPort
         })
     })
 
