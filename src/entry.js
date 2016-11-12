@@ -1,1 +1,1 @@
-require('./tiny.pictures.js')
+require('expose?tiny!./browser.js')

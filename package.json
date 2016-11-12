@@ -2,13 +2,13 @@
   "name": "tiny.pictures-sdk-js",
   "version": "0.5.0",
   "description": "JavaScript SDK for tiny.pictures",
-  "main": "index.js",
+  "main": "dist/universal.js",
   "scripts": {
     "lint": "eslint **/*.js",
     "cover": "istanbul cover --include-all-sources npm run unit",
     "unit": "babel-node \"./node_modules/jasmine/bin/jasmine.js\" JASMINE_CONFIG_PATH=jasmine.json",
     "test": "npm run lint && npm run unit",
-    "build": "babel src/tiny.pictures.js --out-file dist/tiny.pictures.js && webpack",
+    "build": "babel src/universal.js --out-file dist/universal.js && webpack",
     "preversion": "npm test && npm run build"
   },
   "homepage": "https://github.com/erkstruwe/tiny.pictures-sdk-js#readme",
@@ -28,6 +28,7 @@
     "eslint": "^3.10.0",
     "istanbul": "^0.4.5",
     "jasmine": "^2.5.2",
+    "vanilla-lazyload": "^2.1.1",
     "webpack": "^1.13.3"
   },
   "dependencies": {

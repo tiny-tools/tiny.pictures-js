@@ -8,11 +8,14 @@ module.exports = {
     },
     module: {
         loaders: [
-            {test: require.resolve('./src/tiny.pictures.js'), loader: 'expose?tiny'},
             {test: /\.js$/, loader: 'babel'}
         ]
     },
     plugins: [
-        new webpack.optimize.UglifyJsPlugin()
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false
+            }
+        })
     ]
 }

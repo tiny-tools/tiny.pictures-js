@@ -1,9 +1,14 @@
 # tiny.pictures-sdk-js
 JavaScript SDK for [tiny.pictures](https://tiny.pictures/)
 
+## Functions and demo
+* Automatic srcset calculation for responsive images
+* Lazy loading
+Visit (https://tiny.pictures/js-sdk) for demos and details.
+
 ## Browser
 ### Installation
-Use our CDN.
+Use our CDN for a fast-loading and always up-to-date library.
 ```
   ...
   <script src="https://tiny.pictures/tiny.pictures.min.js">
