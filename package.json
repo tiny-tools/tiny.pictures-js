@@ -9,7 +9,7 @@
     "unit": "babel-node \"./node_modules/jasmine/bin/jasmine.js\" JASMINE_CONFIG_PATH=jasmine.json",
     "test": "npm run lint && npm run unit",
     "build": "babel src/universal.js --out-file dist/universal.js && webpack",
-    "preversion": "npm test && npm run build"
+    "preversion": "npm run build && npm test"
   },
   "homepage": "https://github.com/erkstruwe/tiny.pictures-sdk-js#readme",
   "repository": {

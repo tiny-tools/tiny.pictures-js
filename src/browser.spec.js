@@ -36,4 +36,24 @@ describe('browser.js', () => {
             expect(img.setAttribute).toHaveBeenCalledWith('srcset', jasmine.anything())
         })
     })
+
+    describe('registerAngularModule', () => {
+        let angular, tinyPicturesFilter
+        beforeAll(() => {
+            angular = jasmine.createSpyObj('angular', ['module', 'filter'])
+            angular.module.and.callFake(() => angular)
+            angular.filter.and.callFake((filterName, filterProviderFunction) => {
+                tinyPicturesFilter = filterProviderFunction()
+                return angular
+            })
+        })
+
+        it('should register the url function as a filter', () => {
+            browser.registerAngularModule(angular)
+            expect(angular.module).toHaveBeenCalledWith('tiny.pictures', [])
+            expect(angular.filter).toHaveBeenCalledWith('tinyPicturesUrl', jasmine.anything())
+            expect(tinyPicturesFilter('http://tiny.pictures/example1.jpg'))
+                .toBe('https://tiny.pictures/api/example1.jpg?protocol=http&hostname=tiny.pictures')
+        })
+    })
 })

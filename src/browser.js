@@ -39,9 +39,16 @@ const tinyPictures = Object.assign(
                     img.setAttribute('srcset', srcsetArray.join(', '))
                 }
             }
+        },
+        registerAngularModule: (angular) => {
+            angular.module('tiny.pictures', []).filter('tinyPicturesUrl', () => tinyPictures.url)
         }
     }
 )
+
+if (typeof angular == 'object' && typeof angular.module == 'function') {
+    tinyPictures.registerAngularModule(angular)
+}
 
 module.exports = {
     pictures: tinyPictures
