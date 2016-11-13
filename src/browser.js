@@ -46,6 +46,9 @@ const tinyPictures = Object.assign(
     }
 )
 
+tinyPictures._url = tinyPictures.url
+tinyPictures.url = (...args) => tinyPictures._url(...args, typeof location == 'object' ? location.href : null)
+
 // eslint-disable-next-line no-undef
 if (typeof angular == 'object' && typeof angular.module == 'function') {
     // eslint-disable-next-line no-undef

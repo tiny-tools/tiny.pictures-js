@@ -7,11 +7,14 @@ var universal = {
     protocol: 'https',
     hostname: 'tiny.pictures',
     port: '',
-    url: function url(_url, options) {
+    url: function url(_url, options, baseUrl) {
         if (!options) options = {};
 
         var urlObject = urijs(_url).normalize();
 
+        if ((!urlObject.protocol() || !urlObject.hostname()) && baseUrl) {
+            urlObject = urlObject.absoluteTo(baseUrl);
+        }
         if (!urlObject.protocol() || !urlObject.hostname()) {
             throw new Error('url does not have a protocol or hostname');
         }
