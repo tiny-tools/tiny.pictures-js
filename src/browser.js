@@ -46,7 +46,9 @@ const tinyPictures = Object.assign(
     }
 )
 
+// eslint-disable-next-line no-undef
 if (typeof angular == 'object' && typeof angular.module == 'function') {
+    // eslint-disable-next-line no-undef
     tinyPictures.registerAngularModule(angular)
 }
 
