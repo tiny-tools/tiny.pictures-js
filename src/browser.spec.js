@@ -4,7 +4,7 @@ describe('browser.js', () => {
         browser = require('./browser.js').pictures
     })
 
-    describe('replaceImageAttributes', () => {
+    describe('replaceSourceAttributes', () => {
         let url, options, img
         beforeEach(() => {
             url = 'https://tiny.pictures/example'
