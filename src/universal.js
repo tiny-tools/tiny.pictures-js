@@ -5,9 +5,14 @@ const universal = {
     protocol: 'https',
     hostname: 'tiny.pictures',
     port: '',
-    url: (url, options, baseUrl) => {
-        if (!options) options = {}
+    url: (url, options, slashesDenoteHost, baseUrl) => {
+        if (typeof options == 'undefined') options = {}
+        slashesDenoteHost = !!slashesDenoteHost
 
+        let baseUrlObject = baseUrl ? urijs(baseUrl).normalize() : null
+        if (url.indexOf('//') == 0 && baseUrlObject) {
+            url = url.replace(/^\/\//, baseUrlObject.protocol() + '://' + (slashesDenoteHost ? '' : baseUrlObject.host() + '/'))
+        }
         let urlObject = urijs(url).normalize()
 
         if ((!urlObject.protocol() || !urlObject.hostname()) && baseUrl) {

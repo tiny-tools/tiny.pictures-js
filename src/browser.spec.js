@@ -56,4 +56,21 @@ describe('browser.js', () => {
                 .toBe('https://tiny.pictures/api/example1.jpg?protocol=http&hostname=tiny.pictures')
         })
     })
+
+    describe('url', () => {
+        it('should amend parameters', () => {
+            spyOn(browser, '_url')
+            browser.url('url')
+            expect(browser._url).toHaveBeenCalledWith('url', undefined, undefined, null)
+            browser._url.calls.reset()
+            browser.url('url', {})
+            expect(browser._url).toHaveBeenCalledWith('url', {}, undefined, null)
+            browser._url.calls.reset()
+            browser.url('url', {}, true)
+            expect(browser._url).toHaveBeenCalledWith('url', {}, true, null)
+            browser._url.calls.reset()
+            browser.url('url', {}, true, 'baseUrl')
+            expect(browser._url).toHaveBeenCalledWith('url', {}, true, 'baseUrl')
+        })
+    })
 })

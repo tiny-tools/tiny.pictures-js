@@ -7,9 +7,14 @@ var universal = {
     protocol: 'https',
     hostname: 'tiny.pictures',
     port: '',
-    url: function url(_url, options, baseUrl) {
-        if (!options) options = {};
+    url: function url(_url, options, slashesDenoteHost, baseUrl) {
+        if (typeof options == 'undefined') options = {};
+        slashesDenoteHost = !!slashesDenoteHost;
 
+        var baseUrlObject = baseUrl ? urijs(baseUrl).normalize() : null;
+        if (_url.indexOf('//') == 0 && baseUrlObject) {
+            _url = _url.replace(/^\/\//, baseUrlObject.protocol() + '://' + (slashesDenoteHost ? '' : baseUrlObject.host() + '/'));
+        }
         var urlObject = urijs(_url).normalize();
 
         if ((!urlObject.protocol() || !urlObject.hostname()) && baseUrl) {
