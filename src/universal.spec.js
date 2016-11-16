@@ -25,13 +25,19 @@ describe('universal.js', () => {
             expect(universal.url('https://tiny.pictures/example1.jpg', {width: 100}))
                 .toBe('https://tiny.pictures/api/example1.jpg?protocol=https&hostname=tiny.pictures&width=100')
         })
-        it('should should throw if no hostname or protocol is set and no location.href is present', () => {
+        it('should throw if no hostname or protocol is set and no location.href is present', () => {
             expect(() => universal.url('/example1.jpg'))
+                .toThrow()
+            expect(() => universal.url('//tiny.pictures/example1.jpg'))
                 .toThrow()
         })
         it('should complement with location.href if no hostname or protocol is set', () => {
             expect(universal.url('/example1.jpg', null, 'http://tiny.pictures/path/to'))
                 .toBe('https://tiny.pictures/api/example1.jpg?protocol=http&hostname=tiny.pictures')
+            expect(universal.url('//tiny.pictures/example1.jpg', null, 'http://tiny.pictures/path/to'))
+                .toBe('https://tiny.pictures/api/example1.jpg?protocol=http&hostname=tiny.pictures')
+            expect(universal.url('//tiny.pictures/example1.jpg', null, 'https://tiny.pictures/path/to'))
+                .toBe('https://tiny.pictures/api/example1.jpg?protocol=https&hostname=tiny.pictures')
         })
         it('should use custom protocol and hostname', () => {
             const originalProtocol = universal.protocol
