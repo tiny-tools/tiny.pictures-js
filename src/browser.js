@@ -1,17 +1,11 @@
 const lazyload = require('vanilla-lazyload')
-const forEach = require('lodash/forEach')
 
 const tinyPictures = Object.assign(
     require('./universal.js'),
     {
         immediateAll: () => {
-            return forEach(document.getElementsByTagName('img'), (img) => {
-                if (!img.getAttribute('data-src')) return
-                const src = img.getAttribute('data-src')
-                if (src) {
-                    img.setAttribute('src', src)
-                }
-                tinyPictures.immediate(img)
+            return Array.from(document.getElementsByTagName('img')).forEach((img) => {
+                return tinyPictures.immediate(img)
             })
         },
         lazyload: () => {
@@ -26,7 +20,7 @@ const tinyPictures = Object.assign(
                 const optionsString = img.getAttribute('data-tiny.pictures')
                 options = optionsString ? JSON.parse(optionsString) : null
             }
-            const originalSrc = img.getAttribute('data-src') || img.getAttribute('src')
+            const originalSrc =  img.getAttribute('data-src') || img.getAttribute('src')
             const originalWidth = +img.getAttribute('data-tiny.pictures-width')
 
             // src
