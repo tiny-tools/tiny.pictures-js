@@ -4,33 +4,33 @@ const forEach = require('lodash/forEach')
 const tinyPictures = Object.assign(
     require('./universal.js'),
     {
-        immediate: () => {
+        immediateAll: () => {
             return forEach(document.getElementsByTagName('img'), (img) => {
                 if (!img.getAttribute('data-src')) return
                 const src = img.getAttribute('data-src')
                 if (src) {
                     img.setAttribute('src', src)
                 }
-                tinyPictures.replaceSourceAttributes(img)
+                tinyPictures.immediate(img)
             })
         },
         lazyload: () => {
             return new lazyload({
                 data_src: 'src',
                 data_srcset: 'srcset',
-                callback_set: tinyPictures.replaceSourceAttributes
+                callback_set: tinyPictures.immediate
             })
         },
-        replaceSourceAttributes: (img) => {
-            const optionsString = img.getAttribute('data-tiny.pictures')
-            const options = optionsString ? JSON.parse(optionsString) : null
-            const originalSrc = img.getAttribute('src')
+        immediate: (img, options) => {
+            if (!options) {
+                const optionsString = img.getAttribute('data-tiny.pictures')
+                options = optionsString ? JSON.parse(optionsString) : null
+            }
+            const originalSrc = img.getAttribute('data-src') || img.getAttribute('src')
             const originalWidth = +img.getAttribute('data-tiny.pictures-width')
 
             // src
-            if (options) {
-                img.setAttribute('src', tinyPictures.url(originalSrc, options))
-            }
+            img.setAttribute('src', options ? tinyPictures.url(originalSrc, options) : originalSrc)
 
             // srcset
             if (originalWidth) {
@@ -42,6 +42,14 @@ const tinyPictures = Object.assign(
         },
         registerAngularModule: (angular) => {
             angular.module('tiny.pictures', []).filter('tinyPicturesUrl', () => tinyPictures.url)
+        },
+        registerJQueryPlugin: (jQuery) => {
+            jQuery.fn.tinyPictures = function(options) {
+                this.filter('img[data-src]').each(function() {
+                    return tinyPictures.immediate(this, options)
+                })
+                return this
+            }
         }
     }
 )
@@ -56,6 +64,12 @@ tinyPictures.url = (...args) => {
 if (typeof angular == 'object' && typeof angular.module == 'function') {
     // eslint-disable-next-line no-undef
     tinyPictures.registerAngularModule(angular)
+}
+
+// eslint-disable-next-line no-undef
+if (typeof jQuery == 'function' && typeof jQuery.fn == 'object') {
+    // eslint-disable-next-line no-undef
+    tinyPictures.registerJQueryPlugin(jQuery)
 }
 
 module.exports = {

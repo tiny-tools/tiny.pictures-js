@@ -28,6 +28,7 @@
     "eslint": "^3.10.0",
     "istanbul": "^0.4.5",
     "jasmine": "^2.5.2",
+    "jsdom": "^9.8.3",
     "vanilla-lazyload": "^2.1.1",
     "webpack": "^1.13.3"
   },
