@@ -4,9 +4,10 @@ const tinyPictures = Object.assign(
     require('./universal.js'),
     {
         immediateAll: () => {
-            return Array.from(document.getElementsByTagName('img')).forEach((img) => {
-                return tinyPictures.immediate(img)
-            })
+            var list = document.getElementsByTagName('img')
+            for (var i = 0; i < list.length; i++) {
+                tinyPictures.immediate(list[i])
+            }
         },
         lazyload: () => {
             return new lazyload({

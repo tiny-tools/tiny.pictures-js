@@ -12,6 +12,8 @@ describe('universal.js', () => {
                 .toBe('https://tiny.pictures/api/example1.jpg?protocol=http&hostname=tiny.pictures')
             expect(universal.url('http://tiny.pictures:1336/example1.jpg'))
                 .toBe('https://tiny.pictures/api/example1.jpg?protocol=http&hostname=tiny.pictures&port=1336')
+            expect(universal.url('http://tiny.pictures:1336/example1.jpg?test=true'))
+                .toBe('https://tiny.pictures/api/example1.jpg?query=%257B%2522test%2522%253A%2522true%2522%257D&protocol=http&hostname=tiny.pictures&port=1336')
         })
         it('should convert https urls to a tiny.pictures url', () => {
             expect(universal.url('https://tiny.pictures/example1.jpg'))

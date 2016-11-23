@@ -5,11 +5,17 @@
   "main": "dist/universal.js",
   "scripts": {
     "lint": "eslint **/*.js",
-    "cover": "istanbul cover --include-all-sources npm run unit",
-    "unit": "babel-node \"./node_modules/jasmine/bin/jasmine.js\" JASMINE_CONFIG_PATH=jasmine.json",
+    "coverage": "babel-istanbul cover --include-all-sources --captureExceptions --root src -x **/*.spec.js -x entry.js node_modules/jasmine/bin/jasmine.js JASMINE_CONFIG_PATH=jasmine.json",
+    "coverage:coveralls": "npm run coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
+    "unit": "babel-node node_modules/jasmine/bin/jasmine.js JASMINE_CONFIG_PATH=jasmine.json",
     "test": "npm run lint && npm run unit",
+    "test:travis": "npm run lint && npm run coverage:coveralls",
     "build": "babel src/universal.js --out-file dist/universal.js && webpack",
     "preversion": "npm run build && npm test"
+  },
+  "engines": {
+    "node": "^6.9.1",
+    "npm": "^3.10.8"
   },
   "homepage": "https://github.com/erkstruwe/tiny.pictures-sdk-js#readme",
   "repository": {
@@ -23,10 +29,11 @@
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
+    "babel-istanbul": "^0.11.0",
     "babel-loader": "^6.2.7",
     "babel-preset-es2015": "^6.18.0",
+    "coveralls": "^2.11.15",
     "eslint": "^3.10.0",
-    "istanbul": "^0.4.5",
     "jasmine": "^2.5.2",
     "jsdom": "^9.8.3",
     "vanilla-lazyload": "^2.1.1",
