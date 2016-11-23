@@ -5,6 +5,7 @@
         "sourceType": "module"
     },
     "env": {
+        "node": true,
         "jasmine": true,
         "browser": true
     },
