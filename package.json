@@ -9,7 +9,7 @@
     "coverage:coveralls": "npm run coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "unit": "node --harmony node_modules/jasmine/bin/jasmine.js JASMINE_CONFIG_PATH=jasmine.json",
     "test": "npm run lint && npm run unit",
-    "test:travis": "npm run lint && npm run coverage:coveralls",
+    "test:travis": "npm run lint && npm run unit",
     "build": "babel src/universal.js --out-file dist/universal.js && webpack",
     "preversion": "npm run build && npm test"
   },
