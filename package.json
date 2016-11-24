@@ -4,7 +4,7 @@
   "description": "JavaScript SDK for tiny.pictures",
   "main": "dist/universal.js",
   "scripts": {
-    "lint": "eslint **/*.js",
+    "lint": "eslint .",
     "coverage": "istanbul cover --include-all-sources --captureExceptions --root src -x \"**/*.spec.js entry.js\" node_modules/jasmine/bin/jasmine.js JASMINE_CONFIG_PATH=jasmine.json",
     "coverage:coveralls": "npm run coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "unit": "node node_modules/jasmine/bin/jasmine.js JASMINE_CONFIG_PATH=jasmine.json",
