@@ -5,9 +5,9 @@
   "main": "dist/universal.js",
   "scripts": {
     "lint": "eslint **/*.js",
-    "coverage": "node --harmony node_modules/istanbul/lib/cli.js cover --include-all-sources --captureExceptions --root src -x **/*.spec.js -x entry.js node_modules/jasmine/bin/jasmine.js JASMINE_CONFIG_PATH=jasmine.json",
+    "coverage": "istanbul cover --include-all-sources --captureExceptions --root src -x \"**/*.spec.js entry.js\" node_modules/jasmine/bin/jasmine.js JASMINE_CONFIG_PATH=jasmine.json",
     "coverage:coveralls": "npm run coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
-    "unit": "node --harmony node_modules/jasmine/bin/jasmine.js JASMINE_CONFIG_PATH=jasmine.json",
+    "unit": "node node_modules/jasmine/bin/jasmine.js JASMINE_CONFIG_PATH=jasmine.json",
     "test": "npm run lint && npm run unit",
     "test:travis": "npm run lint && npm run unit",
     "build": "babel src/universal.js --out-file dist/universal.js && webpack",
