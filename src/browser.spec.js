@@ -1,7 +1,18 @@
 describe('browser.js', () => {
-    let browser
-    beforeAll(() => {
-        browser = require('./browser.js').pictures
+    const jsdom = require('jsdom')
+    const browser = require('./browser.js').pictures
+
+    describe('immediateAll', () => {
+        it('should set the src attribute of all images', () => {
+            global.document = jsdom.jsdom(
+                '<img data-src="https://tiny.pictures/example1.jpg" data-tiny.pictures=\'{"width": 200}\'>' +
+                '<img data-src="https://tiny.pictures/example2.jpg">'
+            )
+            browser.immediateAll()
+            const images = global.document.getElementsByTagName('img')
+            expect(images[0].getAttribute('src')).toBe('https://tiny.pictures/api/example1.jpg?protocol=https&hostname=tiny.pictures&width=200')
+            expect(images[1].getAttribute('src')).toBe('https://tiny.pictures/example2.jpg')
+        })
     })
 
     describe('immediate', () => {
