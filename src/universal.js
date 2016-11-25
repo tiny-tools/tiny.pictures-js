@@ -24,10 +24,9 @@ const universal = {
 
         const queryObject = urlObject.query(true)
         urlObject.query('')
-        const encoded = encodeURIComponent(JSON.stringify(queryObject))
         // if not empty object
-        if (encoded != '%7B%7D') {
-            urlObject.addQuery('query', encoded)
+        if (encodeURIComponent(JSON.stringify(queryObject)) != '%7B%7D') {
+            urlObject.addQuery('query', JSON.stringify(queryObject));
         }
 
         urlObject.addQuery('protocol', urlObject.protocol())
