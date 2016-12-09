@@ -1,6 +1,6 @@
 {
   "name": "tiny.pictures-sdk-js",
-  "version": "0.29.0",
+  "version": "0.30.0",
   "description": "JavaScript SDK for tiny.pictures",
   "main": "dist/universal.js",
   "scripts": {
@@ -11,8 +11,8 @@
     "test": "npm run lint && npm run unit",
     "test:travis": "npm run lint && npm run coverage:coveralls",
     "build": "babel src/universal.js --out-file dist/universal.js && webpack",
-      "preversion": "npm run build && npm test",
-      "postversion": "git push && npm publish"
+    "preversion": "npm run build && npm test",
+    "postversion": "git push && npm publish"
   },
   "engines": {
     "node": "^6.9.1",
