@@ -22,6 +22,7 @@ const tinyPictures = Object.assign(
                 options = optionsString ? JSON.parse(optionsString) : null
             }
             const originalSrc = img.getAttribute('data-src') || img.getAttribute('src')
+            if (!originalSrc) return
             const originalWidth = +img.getAttribute('data-tiny.pictures-width')
 
             // src

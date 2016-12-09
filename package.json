@@ -11,7 +11,8 @@
     "test": "npm run lint && npm run unit",
     "test:travis": "npm run lint && npm run coverage:coveralls",
     "build": "babel src/universal.js --out-file dist/universal.js && webpack",
-    "preversion": "npm run build && npm test"
+      "preversion": "npm run build && npm test",
+      "postversion": "git push && npm publish"
   },
   "engines": {
     "node": "^6.9.1",
