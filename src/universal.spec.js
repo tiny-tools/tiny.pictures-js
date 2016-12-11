@@ -7,25 +7,25 @@ describe('universal.js', () => {
     describe('url', () => {
         it('should convert http urls to a tiny.pictures url', () => {
             expect(universal.url('http://tiny.pictures/example1.jpg'))
-                .toBe('https://tiny.pictures/api/example1.jpg?protocol=http&hostname=tiny.pictures')
+                .toBe('http://tiny.pictures.tiny.pictures/example1.jpg')
             expect(universal.url('http://tiny.pictures:80/example1.jpg'))
-                .toBe('https://tiny.pictures/api/example1.jpg?protocol=http&hostname=tiny.pictures')
+                .toBe('http://tiny.pictures.tiny.pictures/example1.jpg')
             expect(universal.url('http://tiny.pictures:1336/example1.jpg'))
-                .toBe('https://tiny.pictures/api/example1.jpg?protocol=http&hostname=tiny.pictures&port=1336')
+                .toBe('http://tiny.pictures.tiny.pictures/example1.jpg?port=1336')
             expect(universal.url('http://tiny.pictures:1336/example1.jpg?test=true'))
-                .toBe('https://tiny.pictures/api/example1.jpg?query=%7B%22test%22%3A%22true%22%7D&protocol=http&hostname=tiny.pictures&port=1336')
+                .toBe('http://tiny.pictures.tiny.pictures/example1.jpg?query=%7B%22test%22%3A%22true%22%7D&port=1336')
         })
         it('should convert https urls to a tiny.pictures url', () => {
             expect(universal.url('https://tiny.pictures/example1.jpg'))
-                .toBe('https://tiny.pictures/api/example1.jpg?protocol=https&hostname=tiny.pictures')
+                .toBe('https://tiny.pictures.tiny.pictures/example1.jpg')
             expect(universal.url('https://tiny.pictures:443/example1.jpg'))
-                .toBe('https://tiny.pictures/api/example1.jpg?protocol=https&hostname=tiny.pictures')
+                .toBe('https://tiny.pictures.tiny.pictures/example1.jpg')
             expect(universal.url('https://tiny.pictures:1336/example1.jpg'))
-                .toBe('https://tiny.pictures/api/example1.jpg?protocol=https&hostname=tiny.pictures&port=1336')
+                .toBe('https://tiny.pictures.tiny.pictures/example1.jpg?port=1336')
         })
         it('should append options to query string', () => {
             expect(universal.url('https://tiny.pictures/example1.jpg', {width: 100}))
-                .toBe('https://tiny.pictures/api/example1.jpg?protocol=https&hostname=tiny.pictures&width=100')
+                .toBe('https://tiny.pictures.tiny.pictures/example1.jpg?width=100')
         })
         it('should throw if no hostname or protocol is set and no location.href is present', () => {
             expect(() => universal.url('/example1.jpg'))
@@ -35,27 +35,31 @@ describe('universal.js', () => {
         })
         it('should complement with location.href if no hostname or protocol is set', () => {
             expect(universal.url('/example1.jpg', null, null, 'http://tiny.pictures/path/to'))
-                .toBe('https://tiny.pictures/api/example1.jpg?protocol=http&hostname=tiny.pictures')
+                .toBe('http://tiny.pictures.tiny.pictures/example1.jpg')
+            expect(universal.url('example1.jpg', null, null, 'http://tiny.pictures/path/to'))
+                .toBe('http://tiny.pictures.tiny.pictures/path/example1.jpg')
+            expect(universal.url('example1.jpg', null, null, 'http://tiny.pictures/path/to/'))
+                .toBe('http://tiny.pictures.tiny.pictures/path/to/example1.jpg')
         })
         it('should respect the slashesDenoteHost parameter', () => {
             expect(universal.url('//tiny.pictures/example1.jpg', null, true, 'http://tiny.pictures/path/to'))
-                .toBe('https://tiny.pictures/api/example1.jpg?protocol=http&hostname=tiny.pictures')
+                .toBe('http://tiny.pictures.tiny.pictures/example1.jpg')
             expect(universal.url('//tiny.pictures/example1.jpg', null, true, 'https://tiny.pictures/path/to'))
-                .toBe('https://tiny.pictures/api/example1.jpg?protocol=https&hostname=tiny.pictures')
+                .toBe('https://tiny.pictures.tiny.pictures/example1.jpg')
             expect(universal.url('//tiny.pictures/example1.jpg', null, false, 'http://tiny.pictures/path/to'))
-                .toBe('https://tiny.pictures/api/tiny.pictures/example1.jpg?protocol=http&hostname=tiny.pictures')
+                .toBe('http://tiny.pictures.tiny.pictures/tiny.pictures/example1.jpg')
             expect(universal.url('//tiny.pictures/example1.jpg', null, false, 'https://tiny.pictures/path/to'))
-                .toBe('https://tiny.pictures/api/tiny.pictures/example1.jpg?protocol=https&hostname=tiny.pictures')
+                .toBe('https://tiny.pictures.tiny.pictures/tiny.pictures/example1.jpg')
             expect(universal.url('//example1.jpg', null, true, 'http://tiny.pictures/path/to'))
-                .toBe('https://tiny.pictures/api/?protocol=http&hostname=example1.jpg')
+                .toBe('http://example1.jpg.tiny.pictures/')
             expect(universal.url('//example1.jpg', null, true, 'https://tiny.pictures/path/to'))
-                .toBe('https://tiny.pictures/api/?protocol=https&hostname=example1.jpg')
+                .toBe('https://example1.jpg.tiny.pictures/')
             expect(universal.url('//example1.jpg', null, false, 'http://tiny.pictures/path/to'))
-                .toBe('https://tiny.pictures/api/example1.jpg?protocol=http&hostname=tiny.pictures')
+                .toBe('http://tiny.pictures.tiny.pictures/example1.jpg')
             expect(universal.url('//example1.jpg', null, false, 'https://tiny.pictures/path/to'))
-                .toBe('https://tiny.pictures/api/example1.jpg?protocol=https&hostname=tiny.pictures')
+                .toBe('https://tiny.pictures.tiny.pictures/example1.jpg')
             expect(universal.url('//example1.jpg', null, false, 'https://tiny.pictures:1336/path/to'))
-                .toBe('https://tiny.pictures/api/example1.jpg?protocol=https&hostname=tiny.pictures&port=1336')
+                .toBe('https://tiny.pictures.tiny.pictures/example1.jpg?port=1336')
         })
         it('should use custom protocol and hostname', () => {
             const originalProtocol = universal.protocol
@@ -65,7 +69,7 @@ describe('universal.js', () => {
             universal.hostname = 'custom.domain'
             universal.port = 1336
             expect(universal.url('http://tiny.pictures/example1.jpg'))
-                .toBe('http://custom.domain:1336/api/example1.jpg?protocol=http&hostname=tiny.pictures')
+                .toBe('http://tiny.pictures.custom.domain:1336/example1.jpg')
             universal.protocol = originalProtocol
             universal.hostname = originalHostname
             universal.port = originalPort

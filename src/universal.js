@@ -29,18 +29,12 @@ const universal = {
             urlObject.addQuery('query', JSON.stringify(queryObject));
         }
 
-        urlObject.addQuery('protocol', urlObject.protocol())
-        urlObject.protocol(universal.protocol)
+        urlObject.hostname(urlObject.hostname() + '.' + universal.hostname)
 
-        urlObject.addQuery('hostname', urlObject.hostname())
-        urlObject.hostname(universal.hostname)
-
-        if (urlObject.port() != '' && (urlObject.hasQuery('protocol', 'http') && urlObject.port() != 80 || urlObject.hasQuery('protocol', 'https') && urlObject.port() != 443)) {
+        if (urlObject.port() != '' && (urlObject.protocol() == 'http' && urlObject.port() != 80 || urlObject.protocol() == 'https' && urlObject.port() != 443)) {
             urlObject.addQuery('port', urlObject.port())
         }
         urlObject.port(universal.port)
-
-        urlObject.path('/api' + urlObject.path())
 
         forEach(options, (val, key) => {
             urlObject.addQuery(key, val)
