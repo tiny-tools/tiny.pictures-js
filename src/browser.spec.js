@@ -10,7 +10,7 @@ describe('browser.js', () => {
             )
             browser.immediateAll()
             const images = global.document.getElementsByTagName('img')
-            expect(images[0].getAttribute('src')).toBe('https://tiny.pictures.tiny.pictures/example1.jpg?width=200')
+            expect(images[0].getAttribute('src')).toBe('https://tiny--pictures.tiny.pictures/example1.jpg?width=200')
             expect(images[1].getAttribute('src')).toBe('https://tiny.pictures/example2.jpg')
         })
     })
@@ -72,7 +72,7 @@ describe('browser.js', () => {
             expect(angular.module).toHaveBeenCalledWith('tiny.pictures', [])
             expect(angular.filter).toHaveBeenCalledWith('tinyPicturesUrl', jasmine.anything())
             expect(tinyPicturesFilter('http://tiny.pictures/example1.jpg'))
-                .toBe('http://tiny.pictures.tiny.pictures/example1.jpg')
+                .toBe('http://tiny--pictures.tiny.pictures/example1.jpg')
         })
     })
 

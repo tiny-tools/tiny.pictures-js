@@ -29,7 +29,7 @@ const universal = {
             urlObject.addQuery('query', JSON.stringify(queryObject));
         }
 
-        urlObject.hostname(urlObject.hostname() + '.' + universal.hostname)
+        urlObject.hostname(urlObject.hostname().replace(/\./gi, '--') + '.' + universal.hostname)
 
         if (urlObject.port() != '' && (urlObject.protocol() == 'http' && urlObject.port() != 80 || urlObject.protocol() == 'https' && urlObject.port() != 443)) {
             urlObject.addQuery('port', urlObject.port())
