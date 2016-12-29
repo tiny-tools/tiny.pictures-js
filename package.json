@@ -12,7 +12,7 @@
     "test:travis": "npm run lint && npm run coverage:coveralls",
     "build": "babel src/universal.js --out-file dist/universal.js && webpack",
     "preversion": "npm run build && npm test",
-    "version": "git add -A",
+    "version": "git add --all",
     "postversion": "git push && npm publish"
   },
   "engines": {
