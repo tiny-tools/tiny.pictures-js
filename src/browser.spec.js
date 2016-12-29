@@ -5,12 +5,12 @@ describe('browser.js', () => {
     describe('immediateAll', () => {
         it('should set the src attribute of all images', () => {
             global.document = jsdom.jsdom(
-                '<img data-src="https://tiny.pictures/example1.jpg" data-tiny.pictures=\'{"width": 200}\'>' +
+                '<img data-src="https://tiny.pictures/example1.jpg" data-tiny.pictures=\'{"user": "demo", "width": 200}\'>' +
                 '<img data-src="https://tiny.pictures/example2.jpg">'
             )
             browser.immediateAll()
             const images = global.document.getElementsByTagName('img')
-            expect(images[0].getAttribute('src')).toBe('https://tiny--pictures.tiny.pictures/example1.jpg?width=200')
+            expect(images[0].getAttribute('src')).toBe('https://demo.tiny.pictures/?width=200&source=https%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
             expect(images[1].getAttribute('src')).toBe('https://tiny.pictures/example2.jpg')
         })
     })
@@ -20,7 +20,7 @@ describe('browser.js', () => {
         beforeEach(() => {
             url = 'https://tiny.pictures/example'
             url2 = url + 2
-            options = {quality: 50}
+            options = {user: 'demo', quality: 50}
             img = jasmine.createSpyObj('img', ['getAttribute', 'setAttribute'])
             img.getAttribute.and.callFake((attribute) => {
                 switch (attribute) {
@@ -50,7 +50,7 @@ describe('browser.js', () => {
             expect(img.setAttribute).toHaveBeenCalledWith('srcset', jasmine.anything())
         })
         it('should use options parameter', () => {
-            const optionsOverride = {quality: 60}
+            const optionsOverride = {user: 'demo', quality: 60}
             browser.immediate(img, optionsOverride)
             expect(img.setAttribute).toHaveBeenCalledWith('src', browser.url(url2, optionsOverride))
         })
@@ -71,8 +71,8 @@ describe('browser.js', () => {
             browser.registerAngularModule(angular)
             expect(angular.module).toHaveBeenCalledWith('tiny.pictures', [])
             expect(angular.filter).toHaveBeenCalledWith('tinyPicturesUrl', jasmine.anything())
-            expect(tinyPicturesFilter('http://tiny.pictures/example1.jpg'))
-                .toBe('http://tiny--pictures.tiny.pictures/example1.jpg')
+            expect(tinyPicturesFilter('http://tiny.pictures/example1.jpg', {user: 'demo'}))
+                .toBe('https://demo.tiny.pictures/?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
         })
     })
 

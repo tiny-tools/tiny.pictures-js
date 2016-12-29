@@ -4,41 +4,41 @@ const forEach = require('lodash/forEach')
 const universal = {
     protocol: 'https',
     hostname: 'tiny.pictures',
-    port: '',
-    url: (url, options, slashesDenoteHost, baseUrl) => {
+    port: null,
+    user: null,
+    url: (source, options, slashesDenoteHost, baseUrl) => {
         if (typeof options == 'undefined') options = {}
         slashesDenoteHost = !!slashesDenoteHost
 
+        let user = options.user || universal.user
+        if (!user) {
+            throw new Error('no user set')
+        }
+
         let baseUrlObject = baseUrl ? urijs(baseUrl).normalize() : null
-        if (url.indexOf('//') == 0 && baseUrlObject) {
-            url = url.replace(/^\/\//, baseUrlObject.protocol() + '://' + (slashesDenoteHost ? '' : baseUrlObject.host() + '/'))
+        if (source.indexOf('//') == 0 && baseUrlObject) {
+            source = source.replace(/^\/\//, baseUrlObject.protocol() + '://' + (slashesDenoteHost ? '' : baseUrlObject.host() + '/'))
         }
-        let urlObject = urijs(url).normalize()
-
-        if ((!urlObject.protocol() || !urlObject.hostname()) && baseUrl) {
-            urlObject = urlObject.absoluteTo(baseUrl)
+        let sourceObject = urijs(source).normalize()
+        if ((!sourceObject.protocol() || !sourceObject.hostname()) && baseUrl) {
+            sourceObject = sourceObject.absoluteTo(baseUrl)
         }
-        if (!urlObject.protocol() || !urlObject.hostname()) {
-            throw new Error('url does not have a protocol or hostname')
-        }
-
-        const queryObject = urlObject.query(true)
-        urlObject.query('')
-        // if not empty object
-        if (encodeURIComponent(JSON.stringify(queryObject)) != '%7B%7D') {
-            urlObject.addQuery('query', JSON.stringify(queryObject));
+        if (!sourceObject.protocol() || !sourceObject.hostname()) {
+            throw new Error('source does not have a protocol or hostname')
         }
 
-        urlObject.hostname(urlObject.hostname().replace(/\./gi, '--') + '.' + universal.hostname)
-
-        if (urlObject.port() != '' && (urlObject.protocol() == 'http' && urlObject.port() != 80 || urlObject.protocol() == 'https' && urlObject.port() != 443)) {
-            urlObject.addQuery('port', urlObject.port())
-        }
-        urlObject.port(universal.port)
-
+        let urlObject = urijs({
+            protocol: universal.protocol,
+            hostname: user + '.' + universal.hostname,
+            port: universal.port,
+            path: '/'
+        }).normalize()
         forEach(options, (val, key) => {
-            urlObject.addQuery(key, val)
+            if (key != 'user') {
+                urlObject.addQuery(key, val)
+            }
         })
+        urlObject.addQuery('source', sourceObject.toString())
 
         return urlObject.toString()
     },

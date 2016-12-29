@@ -21,6 +21,7 @@ const tinyPictures = Object.assign(
                 const optionsString = img.getAttribute('data-tiny.pictures')
                 options = optionsString ? JSON.parse(optionsString) : null
             }
+
             const originalSrc = img.getAttribute('data-src') || img.getAttribute('src')
             if (!originalSrc) return
             const originalWidth = +img.getAttribute('data-tiny.pictures-width')
@@ -29,7 +30,7 @@ const tinyPictures = Object.assign(
             img.setAttribute('src', options ? tinyPictures.url(originalSrc, options) : originalSrc)
 
             // srcset
-            if (originalWidth) {
+            if (originalWidth && options) {
                 const srcsetArray = tinyPictures.srcsetArray(originalSrc, originalWidth, options)
                 if (srcsetArray.length) {
                     img.setAttribute('srcset', srcsetArray.join(', '))
