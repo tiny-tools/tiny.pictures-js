@@ -1,6 +1,6 @@
 {
   "name": "tiny.pictures-sdk-js",
-  "version": "0.33.0",
+  "version": "0.34.0",
   "description": "JavaScript SDK for tiny.pictures",
   "main": "dist/universal.js",
   "scripts": {

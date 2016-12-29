@@ -6,41 +6,41 @@ var forEach = require('lodash/forEach');
 var universal = {
     protocol: 'https',
     hostname: 'tiny.pictures',
-    port: '',
-    url: function url(_url, options, slashesDenoteHost, baseUrl) {
+    port: null,
+    user: null,
+    url: function url(source, options, slashesDenoteHost, baseUrl) {
         if (typeof options == 'undefined') options = {};
         slashesDenoteHost = !!slashesDenoteHost;
 
+        var user = options.user || universal.user;
+        if (!user) {
+            throw new Error('no user set');
+        }
+
         var baseUrlObject = baseUrl ? urijs(baseUrl).normalize() : null;
-        if (_url.indexOf('//') == 0 && baseUrlObject) {
-            _url = _url.replace(/^\/\//, baseUrlObject.protocol() + '://' + (slashesDenoteHost ? '' : baseUrlObject.host() + '/'));
+        if (source.indexOf('//') == 0 && baseUrlObject) {
+            source = source.replace(/^\/\//, baseUrlObject.protocol() + '://' + (slashesDenoteHost ? '' : baseUrlObject.host() + '/'));
         }
-        var urlObject = urijs(_url).normalize();
-
-        if ((!urlObject.protocol() || !urlObject.hostname()) && baseUrl) {
-            urlObject = urlObject.absoluteTo(baseUrl);
+        var sourceObject = urijs(source).normalize();
+        if ((!sourceObject.protocol() || !sourceObject.hostname()) && baseUrl) {
+            sourceObject = sourceObject.absoluteTo(baseUrl);
         }
-        if (!urlObject.protocol() || !urlObject.hostname()) {
-            throw new Error('url does not have a protocol or hostname');
-        }
-
-        var queryObject = urlObject.query(true);
-        urlObject.query('');
-        // if not empty object
-        if (encodeURIComponent(JSON.stringify(queryObject)) != '%7B%7D') {
-            urlObject.addQuery('query', JSON.stringify(queryObject));
+        if (!sourceObject.protocol() || !sourceObject.hostname()) {
+            throw new Error('source does not have a protocol or hostname');
         }
 
-        urlObject.hostname(urlObject.hostname().replace(/\./gi, '--') + '.' + universal.hostname);
-
-        if (urlObject.port() != '' && (urlObject.protocol() == 'http' && urlObject.port() != 80 || urlObject.protocol() == 'https' && urlObject.port() != 443)) {
-            urlObject.addQuery('port', urlObject.port());
-        }
-        urlObject.port(universal.port);
-
+        var urlObject = urijs({
+            protocol: universal.protocol,
+            hostname: user + '.' + universal.hostname,
+            port: universal.port,
+            path: '/'
+        }).normalize();
         forEach(options, function (val, key) {
-            urlObject.addQuery(key, val);
+            if (key != 'user') {
+                urlObject.addQuery(key, val);
+            }
         });
+        urlObject.addQuery('source', sourceObject.toString());
 
         return urlObject.toString();
     },
