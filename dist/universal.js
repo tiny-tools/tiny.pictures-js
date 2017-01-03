@@ -12,6 +12,10 @@ var universal = {
         if (typeof options == 'undefined') options = {};
         slashesDenoteHost = !!slashesDenoteHost;
 
+        if (!source) {
+            return null;
+        }
+
         var user = options.user || universal.user;
         if (!user) {
             throw new Error('no user set');
