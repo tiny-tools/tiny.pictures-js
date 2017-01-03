@@ -10,6 +10,10 @@ const universal = {
         if (typeof options == 'undefined') options = {}
         slashesDenoteHost = !!slashesDenoteHost
 
+        if (!source) {
+            return null;
+        }
+
         let user = options.user || universal.user
         if (!user) {
             throw new Error('no user set')

@@ -5,6 +5,10 @@ describe('universal.js', () => {
     })
 
     describe('url', () => {
+        it('should return null if no source is set', () => {
+            expect(universal.url(''))
+                .toBe(null)
+        })
         it('should throw if no user is set', () => {
             expect(() => universal.url('http://tiny.pictures/example1.jpg'))
                 .toThrow()
