@@ -15,27 +15,19 @@ describe('universal.js', () => {
             expect(() => universal.url('http://tiny.pictures/example1.jpg', {}))
                 .toThrow()
         })
-        it('should convert http urls to a tiny.pictures url', () => {
+        it('should convert urls to a tiny.pictures url', () => {
             expect(universal.url('http://tiny.pictures/example1.jpg', {user: 'demo'}))
-                .toBe('https://demo.tiny.pictures/?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
+                .toBe('https://api.tiny.pictures/demo?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
             expect(universal.url('http://tiny.pictures:80/example1.jpg', {user: 'demo'}))
-                .toBe('https://demo.tiny.pictures/?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
+                .toBe('https://api.tiny.pictures/demo?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
             expect(universal.url('http://tiny.pictures:1336/example1.jpg', {user: 'demo'}))
-                .toBe('https://demo.tiny.pictures/?source=http%3A%2F%2Ftiny.pictures%3A1336%2Fexample1.jpg')
+                .toBe('https://api.tiny.pictures/demo?source=http%3A%2F%2Ftiny.pictures%3A1336%2Fexample1.jpg')
             expect(universal.url('http://tiny.pictures:1336/example1.jpg?test=true', {user: 'demo'}))
-                .toBe('https://demo.tiny.pictures/?source=http%3A%2F%2Ftiny.pictures%3A1336%2Fexample1.jpg%3Ftest%3Dtrue')
-        })
-        it('should convert https urls to a tiny.pictures url', () => {
-            expect(universal.url('https://tiny.pictures/example1.jpg', {user: 'demo'}))
-                .toBe('https://demo.tiny.pictures/?source=https%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
-            expect(universal.url('https://tiny.pictures:443/example1.jpg', {user: 'demo'}))
-                .toBe('https://demo.tiny.pictures/?source=https%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
-            expect(universal.url('https://tiny.pictures:1336/example1.jpg', {user: 'demo'}))
-                .toBe('https://demo.tiny.pictures/?source=https%3A%2F%2Ftiny.pictures%3A1336%2Fexample1.jpg')
+                .toBe('https://api.tiny.pictures/demo?source=http%3A%2F%2Ftiny.pictures%3A1336%2Fexample1.jpg%3Ftest%3Dtrue')
         })
         it('should append options to query string', () => {
             expect(universal.url('http://tiny.pictures/example1.jpg', {user: 'demo', width: 100}))
-                .toBe('https://demo.tiny.pictures/?width=100&source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
+                .toBe('https://api.tiny.pictures/demo?width=100&source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
         })
         it('should throw if no hostname or protocol is set and no location.href is present', () => {
             expect(() => universal.url('/example1.jpg'))
@@ -45,25 +37,25 @@ describe('universal.js', () => {
         })
         it('should complement with location.href if no hostname or protocol is set', () => {
             expect(universal.url('/example1.jpg', {user: 'demo'}, null, 'http://tiny.pictures/path/to'))
-                .toBe('https://demo.tiny.pictures/?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
+                .toBe('https://api.tiny.pictures/demo?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
             expect(universal.url('example1.jpg', {user: 'demo'}, null, 'http://tiny.pictures/path/to'))
-                .toBe('https://demo.tiny.pictures/?source=http%3A%2F%2Ftiny.pictures%2Fpath%2Fexample1.jpg')
+                .toBe('https://api.tiny.pictures/demo?source=http%3A%2F%2Ftiny.pictures%2Fpath%2Fexample1.jpg')
             expect(universal.url('example1.jpg', {user: 'demo'}, null, 'http://tiny.pictures/path/to/'))
-                .toBe('https://demo.tiny.pictures/?source=http%3A%2F%2Ftiny.pictures%2Fpath%2Fto%2Fexample1.jpg')
+                .toBe('https://api.tiny.pictures/demo?source=http%3A%2F%2Ftiny.pictures%2Fpath%2Fto%2Fexample1.jpg')
         })
         it('should respect the slashesDenoteHost parameter', () => {
             expect(universal.url('//tiny.pictures/example1.jpg', {user: 'demo'}, true, 'http://tiny.pictures/path/to'))
-                .toBe('https://demo.tiny.pictures/?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
+                .toBe('https://api.tiny.pictures/demo?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
             expect(universal.url('//tiny.pictures/example1.jpg', {user: 'demo'}, true, 'https://tiny.pictures/path/to'))
-                .toBe('https://demo.tiny.pictures/?source=https%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
+                .toBe('https://api.tiny.pictures/demo?source=https%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
             expect(universal.url('//tiny.pictures/example1.jpg', {user: 'demo'}, false, 'http://tiny.pictures/path/to'))
-                .toBe('https://demo.tiny.pictures/?source=http%3A%2F%2Ftiny.pictures%2Ftiny.pictures%2Fexample1.jpg')
+                .toBe('https://api.tiny.pictures/demo?source=http%3A%2F%2Ftiny.pictures%2Ftiny.pictures%2Fexample1.jpg')
             expect(universal.url('//example1.jpg', {user: 'demo'}, true, 'http://tiny.pictures/path/to'))
-                .toBe('https://demo.tiny.pictures/?source=http%3A%2F%2Fexample1.jpg%2F')
+                .toBe('https://api.tiny.pictures/demo?source=http%3A%2F%2Fexample1.jpg%2F')
             expect(universal.url('//example1.jpg', {user: 'demo'}, false, 'http://tiny.pictures/path/to'))
-                .toBe('https://demo.tiny.pictures/?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
+                .toBe('https://api.tiny.pictures/demo?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
             expect(universal.url('//example1.jpg', {user: 'demo'}, false, 'http://tiny.pictures:1336/path/to'))
-                .toBe('https://demo.tiny.pictures/?source=http%3A%2F%2Ftiny.pictures%3A1336%2Fexample1.jpg')
+                .toBe('https://api.tiny.pictures/demo?source=http%3A%2F%2Ftiny.pictures%3A1336%2Fexample1.jpg')
         })
         it('should use custom protocol, hostname, port, and default user', () => {
             const originalProtocol = universal.protocol
@@ -75,7 +67,7 @@ describe('universal.js', () => {
             universal.port = 1336
             universal.user = 'demo2'
             expect(universal.url('http://tiny.pictures/example1.jpg'))
-                .toBe('http://demo2.custom.domain:1336/?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
+                .toBe('http://custom.domain:1336/demo2?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
             universal.protocol = originalProtocol
             universal.hostname = originalHostname
             universal.port = originalPort
