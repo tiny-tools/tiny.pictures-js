@@ -5,7 +5,7 @@ var forEach = require('lodash/forEach');
 
 var universal = {
     protocol: 'https',
-    hostname: 'tiny.pictures',
+    hostname: 'api.tiny.pictures',
     port: null,
     user: null,
     url: function url(source, options, slashesDenoteHost, baseUrl) {
@@ -35,9 +35,9 @@ var universal = {
 
         var urlObject = urijs({
             protocol: universal.protocol,
-            hostname: user + '.' + universal.hostname,
+            hostname: universal.hostname,
             port: universal.port,
-            path: '/'
+            path: '/' + user
         }).normalize();
         forEach(options, function (val, key) {
             if (key != 'user') {
