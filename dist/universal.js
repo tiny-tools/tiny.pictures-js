@@ -2,12 +2,14 @@
 
 var urijs = require('urijs');
 var forEach = require('lodash/forEach');
+var find = require('lodash/find');
 
 var universal = {
     protocol: 'https',
     hostname: 'api.tiny.pictures',
     port: null,
     user: null,
+    namedSources: [],
     url: function url(source, options, slashesDenoteHost, baseUrl) {
         if (typeof options == 'undefined') options = {};
         slashesDenoteHost = !!slashesDenoteHost;
@@ -33,18 +35,26 @@ var universal = {
             throw new Error('source does not have a protocol or hostname');
         }
 
+        // use named sources if present
+        var sourceUrl = sourceObject.toString();
+        var namedSource = find(universal.namedSources, function (namedSource) {
+            return sourceUrl.indexOf(namedSource.url) > -1;
+        });
+
         var urlObject = urijs({
             protocol: universal.protocol,
             hostname: universal.hostname,
             port: universal.port,
-            path: '/' + user
+            path: '/' + user + (namedSource ? urijs.joinPaths('', namedSource.name, sourceUrl.replace(namedSource.url, '')) : '')
         }).normalize();
         forEach(options, function (val, key) {
             if (key != 'user') {
                 urlObject.addQuery(key, val);
             }
         });
-        urlObject.addQuery('source', sourceObject.toString());
+        if (!namedSource) {
+            urlObject.addQuery('source', sourceUrl);
+        }
 
         return urlObject.toString();
     },
