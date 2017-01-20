@@ -73,6 +73,16 @@ describe('universal.js', () => {
             universal.port = originalPort
             universal.user = originalUser
         })
+        it('should use named sources', () => {
+            const originalNamedSources = universal.namedSources
+            universal.namedSources = [{name: 'main', url: 'https://tiny.pictures'}]
+            expect(universal.url('https://tiny.pictures/example1.jpg', {user: 'demo'}))
+                .toBe('https://api.tiny.pictures/demo/main/example1.jpg')
+            universal.namedSources = [{name: 'main', url: 'https://tiny.pictures/'}]
+            expect(universal.url('https://tiny.pictures/example1.jpg', {user: 'demo'}))
+                .toBe('https://api.tiny.pictures/demo/main/example1.jpg')
+            universal.namedSources = originalNamedSources
+        })
     })
 
     describe('srcsetArray', () => {
