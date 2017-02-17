@@ -1,1 +1,1 @@
-require('expose?tiny!./browser.js')
+require('expose-loader?tiny!./browser.js')

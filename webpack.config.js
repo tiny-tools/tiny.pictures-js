@@ -1,21 +1,12 @@
-const webpack = require('webpack')
-
 module.exports = {
-    entry: "./src/entry.js",
+    entry: './src/entry.js',
     output: {
         path: 'dist',
-        filename: "tiny.pictures.min.js"
+        filename: 'tiny.pictures.min.js'
     },
     module: {
         loaders: [
-            {test: /\.js$/, loader: 'babel'}
+            {test: /\.js$/, loader: 'babel-loader'}
         ]
-    },
-    plugins: [
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                warnings: false
-            }
-        })
-    ]
+    }
 }
