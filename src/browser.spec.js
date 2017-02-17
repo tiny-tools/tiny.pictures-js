@@ -73,6 +73,11 @@ describe('Browser', function () {
             this.browser.immediate(this.img)
             expect(this.img.setAttribute).toHaveBeenCalledWith('srcset', jasmine.anything())
         })
+        it('should calculate the srcset attribute even if no options are set', function () {
+            this.options = null
+            this.browser.immediate(this.img)
+            expect(this.img.setAttribute).toHaveBeenCalledWith('srcset', jasmine.anything())
+        })
         it('should use options parameter', function () {
             const optionsOverride = {quality: 60}
             this.browser.immediate(this.img, optionsOverride)

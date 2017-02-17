@@ -37,7 +37,7 @@ export class Browser extends Universal {
         img.setAttribute('src', options ? this.url(originalSrc, options) : originalSrc)
 
         // srcset
-        if (originalWidth && options) {
+        if (originalWidth) {
             const srcsetArray = this.srcsetArray(originalSrc, originalWidth, options)
             if (srcsetArray.length) {
                 img.setAttribute('srcset', srcsetArray.join(', '))
