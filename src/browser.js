@@ -59,6 +59,6 @@ export class Browser extends Universal {
     }
 }
 
-export default {
-    pictures: Browser
+export {
+    Browser as pictures
 }
