@@ -35,6 +35,9 @@ export default class Universal {
                     case 'random':
                         this._overrideSourcesImages = ['http://lorempixel.com/1920/1920']
                         break
+                    case false:
+                        this._overrideSourcesImages = []
+                        break
                     case 'abstract':
                     case 'animals':
                     case 'business':
@@ -87,7 +90,7 @@ export default class Universal {
         if (!source) return null
 
         let baseUrlObject = baseUrl ? urijs(baseUrl).normalize() : null
-        if (source.indexOf('//') == 0 && baseUrlObject) {
+        if (source.indexOf('//') === 0 && baseUrlObject) {
             source = source.replace(/^\/\//, baseUrlObject.protocol() + '://' + (slashesDenoteHost ? '' : baseUrlObject.host() + '/'))
         }
         let sourceObject = urijs(source).normalize()

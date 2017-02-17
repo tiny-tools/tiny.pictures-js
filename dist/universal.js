@@ -67,6 +67,9 @@ var Universal = function () {
                     case 'random':
                         this._overrideSourcesImages = ['http://lorempixel.com/1920/1920'];
                         break;
+                    case false:
+                        this._overrideSourcesImages = [];
+                        break;
                     case 'abstract':
                     case 'animals':
                     case 'business':
@@ -126,7 +129,7 @@ var Universal = function () {
             if (!source) return null;
 
             var baseUrlObject = baseUrl ? (0, _urijs2.default)(baseUrl).normalize() : null;
-            if (source.indexOf('//') == 0 && baseUrlObject) {
+            if (source.indexOf('//') === 0 && baseUrlObject) {
                 source = source.replace(/^\/\//, baseUrlObject.protocol() + '://' + (slashesDenoteHost ? '' : baseUrlObject.host() + '/'));
             }
             var sourceObject = (0, _urijs2.default)(source).normalize();
