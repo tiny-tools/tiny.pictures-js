@@ -1,18 +1,23 @@
 import urijs from 'urijs'
-import defaults from 'lodash/defaults'
+import defaultsDeep from 'lodash/defaults'
 import forEach from 'lodash/forEach'
 import find from 'lodash/find'
 import startsWith from 'lodash/startsWith'
+import sample from 'lodash/sample'
+import { isPrivate } from 'sync-is-private-host'
 
 export default class Universal {
     constructor(options = {}) {
-        this._options = defaults(
+        this._options = defaultsDeep(
             {},
             options,
             {
                 user: null,
                 namedSources: [],
-                devMode: false,
+                overrideSources: {
+                    images: [],
+                    always: false
+                },
                 customSubdomain: false,
                 protocol: 'https',
                 defaultBaseUrl: '',
@@ -22,6 +27,42 @@ export default class Universal {
 
         // plausibility checks
         if (!this._options.user) throw new Error('no user set')
+
+        // _overrideSources
+        this._overrideSources = {
+            always: this._options.overrideSources.always
+        }
+        switch (typeof this._options.overrideSources.images) {
+            case 'boolean':
+            case 'string':
+                switch (this._options.overrideSources.images) {
+                    case true:
+                    case 'random':
+                        this._overrideSources.images = ['http://lorempixel.com/1920/1920']
+                        break
+                    case 'abstract':
+                    case 'animals':
+                    case 'business':
+                    case 'cats':
+                    case 'city':
+                    case 'food':
+                    case 'nightlife':
+                    case 'fashion':
+                    case 'people':
+                    case 'nature':
+                    case 'sports':
+                    case 'technics':
+                    case 'transport':
+                        this._overrideSources.images = ['http://lorempixel.com/1920/1920/' + this._options.overrideSources.images]
+                        break
+                    default:
+                        this._overrideSources.images = [this._options.overrideSources.images]
+                }
+                break
+            default:
+                this._overrideSources.images = this._options.overrideSources.images
+                break
+        }
 
         // _apiBaseUrlObject
         switch (this._options.customSubdomain) {
@@ -36,9 +77,9 @@ export default class Universal {
             case true:
                 this._apiBaseUrlObject = {
                     protocol: this._options.protocol,
-                    hostname: this._options.user + '.tiny.pictures',
+                    hostname: 'api.tiny.pictures', // TODO: this._options.user
                     port: null,
-                    path: '/'
+                    path: '/' + this._options.user
                 }
                 break
             default:
@@ -60,6 +101,11 @@ export default class Universal {
         }
         if (!sourceObject.protocol() || !sourceObject.hostname()) {
             throw new Error('source does not have a protocol or hostname')
+        }
+
+        // override sources
+        if (this._overrideSources.images.length && (this._overrideSources.always || isPrivate(sourceObject.hostname()))) {
+            sourceObject = urijs(sample(this._overrideSources.images))
         }
 
         // use named sources if present

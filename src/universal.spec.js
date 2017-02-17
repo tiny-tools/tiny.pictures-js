@@ -13,7 +13,7 @@ describe('Universal', function () {
             expect((new Universal({
                 user: 'demo',
                 customSubdomain: true
-            }))._apiBaseUrlObject.hostname).toBe('demo.tiny.pictures')
+            }))._apiBaseUrlObject.hostname).toBe('api.tiny.pictures')
             expect((new Universal({
                 user: 'demo',
                 customSubdomain: 'http://localhost:1336/'
@@ -80,6 +80,17 @@ describe('Universal', function () {
             this.universal.namedSources = [{name: 'main', url: 'https://tiny.pictures/'}]
             expect(this.universal.url('https://tiny.pictures/example1.jpg')).toBe('https://tiny.pictures/api/demo/main/example1.jpg')
             this.universal._options.namedSources = originalNamedSources
+        })
+        it('should respect overrideSources', function() {
+            this.universal = new Universal({
+                user: 'demo',
+                overrideSources: {
+                    images: 'cats',
+                    always: true
+                }
+            })
+            expect(this.universal.url('http://tiny.pictures/example1.jpg'))
+                .toBe('https://tiny.pictures/api/demo?source=http%3A%2F%2Florempixel.com%2F1920%2F1920%2Fcats')
         })
     })
 

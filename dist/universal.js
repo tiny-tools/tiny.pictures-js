@@ -4,6 +4,8 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _urijs = require('urijs');
@@ -26,6 +28,12 @@ var _startsWith = require('lodash/startsWith');
 
 var _startsWith2 = _interopRequireDefault(_startsWith);
 
+var _sample = require('lodash/sample');
+
+var _sample2 = _interopRequireDefault(_sample);
+
+var _syncIsPrivateHost = require('sync-is-private-host');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -39,7 +47,10 @@ var Universal = function () {
         this._options = (0, _defaults2.default)({}, options, {
             user: null,
             namedSources: [],
-            devMode: false,
+            overrideSources: {
+                images: [],
+                always: false
+            },
             customSubdomain: false,
             protocol: 'https',
             defaultBaseUrl: '',
@@ -48,6 +59,42 @@ var Universal = function () {
 
         // plausibility checks
         if (!this._options.user) throw new Error('no user set');
+
+        // _overrideSources
+        this._overrideSources = {
+            always: this._options.overrideSources.always
+        };
+        switch (_typeof(this._options.overrideSources.images)) {
+            case 'boolean':
+            case 'string':
+                switch (this._options.overrideSources.images) {
+                    case true:
+                    case 'random':
+                        this._overrideSources.images = ['http://lorempixel.com/1920/1920'];
+                        break;
+                    case 'abstract':
+                    case 'animals':
+                    case 'business':
+                    case 'cats':
+                    case 'city':
+                    case 'food':
+                    case 'nightlife':
+                    case 'fashion':
+                    case 'people':
+                    case 'nature':
+                    case 'sports':
+                    case 'technics':
+                    case 'transport':
+                        this._overrideSources.images = ['http://lorempixel.com/1920/1920/' + this._options.overrideSources.images];
+                        break;
+                    default:
+                        this._overrideSources.images = [this._options.overrideSources.images];
+                }
+                break;
+            default:
+                this._overrideSources.images = this._options.overrideSources.images;
+                break;
+        }
 
         // _apiBaseUrlObject
         switch (this._options.customSubdomain) {
@@ -62,9 +109,9 @@ var Universal = function () {
             case true:
                 this._apiBaseUrlObject = {
                     protocol: this._options.protocol,
-                    hostname: this._options.user + '.tiny.pictures',
+                    hostname: 'api.tiny.pictures', // TODO: this._options.user
                     port: null,
-                    path: '/'
+                    path: '/' + this._options.user
                 };
                 break;
             default:
@@ -93,6 +140,11 @@ var Universal = function () {
             }
             if (!sourceObject.protocol() || !sourceObject.hostname()) {
                 throw new Error('source does not have a protocol or hostname');
+            }
+
+            // override sources
+            if (this._overrideSources.images.length && (this._overrideSources.always || (0, _syncIsPrivateHost.isPrivate)(sourceObject.hostname()))) {
+                sourceObject = (0, _urijs2.default)((0, _sample2.default)(this._overrideSources.images));
             }
 
             // use named sources if present

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+    </head>
+    <body>
+        <div class="container">
+            <h1>Localhost</h1>
+            <h2>Without overrideSources</h2>
+            <p>Gets redirected to the original localhost source by tiny.pictures server. Grayscale operation cannot be applied.</p>
+            <p><img class="img-fluid" data-src="example1.jpg"></p>
+            <h2>With overrideSources</h2>
+            <p>Uses a random replacement image from the overrideSources array. Grayscale operation can be applied.</p>
+            <p><img class="img-fluid" data-src="example1.jpg"></p>
+        </div>
+        <script src="/tiny.pictures.min.js"></script>
+        <script>
+            var tinyPicturesWithoutOverrideSources = new tiny.pictures({
+                user: 'demo',
+                customSubdomain: true
+            })
+            var tinyPicturesWithOverrideSources = new tiny.pictures({
+                user: 'demo',
+                customSubdomain: true,
+                overrideSources: {
+                    images: 'cats'
+                }
+            })
+            var images = document.getElementsByTagName('img')
+            tinyPicturesWithoutOverrideSources.immediate(images[0], {grayscale: true})
+            tinyPicturesWithOverrideSources.immediate(images[1], {grayscale: true})
+        </script>
+    </body>
+</html>
