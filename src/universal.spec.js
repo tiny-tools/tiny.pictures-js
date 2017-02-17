@@ -84,10 +84,8 @@ describe('Universal', function () {
         it('should respect overrideSources', function() {
             this.universal = new Universal({
                 user: 'demo',
-                overrideSources: {
-                    images: 'cats',
-                    always: true
-                }
+                overrideSourcesImages: 'cats',
+                overrideSourcesAlways: true
             })
             expect(this.universal.url('http://tiny.pictures/example1.jpg'))
                 .toBe('https://tiny.pictures/api/demo?source=http%3A%2F%2Florempixel.com%2F1920%2F1920%2Fcats')

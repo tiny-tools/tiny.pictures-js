@@ -14,10 +14,8 @@ export default class Universal {
             {
                 user: null,
                 namedSources: [],
-                overrideSources: {
-                    images: [],
-                    always: false
-                },
+                overrideSourcesImages: [],
+                overrideSourcesAlways: false,
                 customSubdomain: false,
                 protocol: 'https',
                 defaultBaseUrl: '',
@@ -29,16 +27,13 @@ export default class Universal {
         if (!this._options.user) throw new Error('no user set')
 
         // _overrideSources
-        this._overrideSources = {
-            always: this._options.overrideSources.always
-        }
-        switch (typeof this._options.overrideSources.images) {
+        switch (typeof this._options.overrideSourcesImages) {
             case 'boolean':
             case 'string':
-                switch (this._options.overrideSources.images) {
+                switch (this._options.overrideSourcesImages) {
                     case true:
                     case 'random':
-                        this._overrideSources.images = ['http://lorempixel.com/1920/1920']
+                        this._overrideSourcesImages = ['http://lorempixel.com/1920/1920']
                         break
                     case 'abstract':
                     case 'animals':
@@ -53,14 +48,14 @@ export default class Universal {
                     case 'sports':
                     case 'technics':
                     case 'transport':
-                        this._overrideSources.images = ['http://lorempixel.com/1920/1920/' + this._options.overrideSources.images]
+                        this._overrideSourcesImages = ['http://lorempixel.com/1920/1920/' + this._options.overrideSourcesImages]
                         break
                     default:
-                        this._overrideSources.images = [this._options.overrideSources.images]
+                        this._overrideSourcesImages = [this._options.overrideSourcesImages]
                 }
                 break
             default:
-                this._overrideSources.images = this._options.overrideSources.images
+                this._overrideSourcesImages = this._options.overrideSourcesImages
                 break
         }
 
@@ -104,8 +99,8 @@ export default class Universal {
         }
 
         // override sources
-        if (this._overrideSources.images.length && (this._overrideSources.always || isPrivate(sourceObject.hostname()))) {
-            sourceObject = urijs(sample(this._overrideSources.images))
+        if (this._overrideSourcesImages.length && (this._options.overrideSourcesAlways || isPrivate(sourceObject.hostname()))) {
+            sourceObject = urijs(sample(this._overrideSourcesImages))
         }
 
         // use named sources if present

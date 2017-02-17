@@ -47,10 +47,8 @@ var Universal = function () {
         this._options = (0, _defaults2.default)({}, options, {
             user: null,
             namedSources: [],
-            overrideSources: {
-                images: [],
-                always: false
-            },
+            overrideSourcesImages: [],
+            overrideSourcesAlways: false,
             customSubdomain: false,
             protocol: 'https',
             defaultBaseUrl: '',
@@ -61,16 +59,13 @@ var Universal = function () {
         if (!this._options.user) throw new Error('no user set');
 
         // _overrideSources
-        this._overrideSources = {
-            always: this._options.overrideSources.always
-        };
-        switch (_typeof(this._options.overrideSources.images)) {
+        switch (_typeof(this._options.overrideSourcesImages)) {
             case 'boolean':
             case 'string':
-                switch (this._options.overrideSources.images) {
+                switch (this._options.overrideSourcesImages) {
                     case true:
                     case 'random':
-                        this._overrideSources.images = ['http://lorempixel.com/1920/1920'];
+                        this._overrideSourcesImages = ['http://lorempixel.com/1920/1920'];
                         break;
                     case 'abstract':
                     case 'animals':
@@ -85,14 +80,14 @@ var Universal = function () {
                     case 'sports':
                     case 'technics':
                     case 'transport':
-                        this._overrideSources.images = ['http://lorempixel.com/1920/1920/' + this._options.overrideSources.images];
+                        this._overrideSourcesImages = ['http://lorempixel.com/1920/1920/' + this._options.overrideSourcesImages];
                         break;
                     default:
-                        this._overrideSources.images = [this._options.overrideSources.images];
+                        this._overrideSourcesImages = [this._options.overrideSourcesImages];
                 }
                 break;
             default:
-                this._overrideSources.images = this._options.overrideSources.images;
+                this._overrideSourcesImages = this._options.overrideSourcesImages;
                 break;
         }
 
@@ -143,8 +138,8 @@ var Universal = function () {
             }
 
             // override sources
-            if (this._overrideSources.images.length && (this._overrideSources.always || (0, _syncIsPrivateHost.isPrivate)(sourceObject.hostname()))) {
-                sourceObject = (0, _urijs2.default)((0, _sample2.default)(this._overrideSources.images));
+            if (this._overrideSourcesImages.length && (this._options.overrideSourcesAlways || (0, _syncIsPrivateHost.isPrivate)(sourceObject.hostname()))) {
+                sourceObject = (0, _urijs2.default)((0, _sample2.default)(this._overrideSourcesImages));
             }
 
             // use named sources if present

@@ -24,9 +24,7 @@
             var tinyPicturesWithOverrideSources = new tiny.pictures({
                 user: 'demo',
                 customSubdomain: true,
-                overrideSources: {
-                    images: 'cats'
-                }
+                overrideSourcesImages: 'cats'
             })
             var images = document.getElementsByTagName('img')
             tinyPicturesWithoutOverrideSources.immediate(images[0], {grayscale: true})
