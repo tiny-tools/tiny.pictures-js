@@ -4,23 +4,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () {
-    function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];
-            descriptor.enumerable = descriptor.enumerable || false;
-            descriptor.configurable = true;
-            if ("value" in descriptor) descriptor.writable = true;
-            Object.defineProperty(target, descriptor.key, descriptor);
-        }
-    }
-
-    return function (Constructor, protoProps, staticProps) {
-        if (protoProps) defineProperties(Constructor.prototype, protoProps);
-        if (staticProps) defineProperties(Constructor, staticProps);
-        return Constructor;
-    };
-}();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _urijs = require('urijs');
 
@@ -42,15 +26,9 @@ var _startsWith = require('lodash/startsWith');
 
 var _startsWith2 = _interopRequireDefault(_startsWith);
 
-function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {default: obj};
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-    }
-}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Universal = function () {
     function Universal() {
@@ -146,9 +124,9 @@ var Universal = function () {
             var srcsetArray = [];
             (0, _forEach2.default)(this._options.srcsetWidths, function (width) {
                 if (width >= originalWidth) return false;
-                srcsetArray.push(_this.url(originalSrc, Object.assign({}, options, {width: width})) + ' ' + width + 'w');
+                srcsetArray.push(_this.url(originalSrc, Object.assign({}, options, { width: width })) + ' ' + width + 'w');
             });
-            srcsetArray.push(this.url(originalSrc, Object.assign({}, options, {width: originalWidth})) + ' ' + originalWidth + 'w');
+            srcsetArray.push(this.url(originalSrc, Object.assign({}, options, { width: originalWidth })) + ' ' + originalWidth + 'w');
             return srcsetArray;
         }
     }]);
