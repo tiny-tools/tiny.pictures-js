@@ -50,9 +50,10 @@ export class Browser extends Universal {
     }
 
     registerJQueryPlugin(jQuery) {
+        const self = this
         jQuery.fn.tinyPictures = function (options) {
             this.filter('img[data-src]').each(function () {
-                return this.immediate(this, options)
+                return self.immediate(this, options)
             })
             return this
         }
