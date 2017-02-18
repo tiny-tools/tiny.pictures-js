@@ -38,9 +38,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var test = function test() {
-};
-
 var Universal = function () {
     function Universal() {
         var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
