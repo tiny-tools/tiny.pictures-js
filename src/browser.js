@@ -8,21 +8,6 @@ export class Browser extends Universal {
         return super.url(...args)
     }
 
-    immediateAll() {
-        var list = document.getElementsByTagName('img')
-        for (var i = 0; i < list.length; i++) {
-            this.immediate(list[i])
-        }
-    }
-
-    lazyload() {
-        return new LazyLoad({
-            data_src: 'src',
-            data_srcset: 'srcset',
-            callback_set: this.immediate
-        })
-    }
-
     immediate(img, options) {
         if (!options) {
             const optionsString = img.getAttribute('data-tiny.pictures')
@@ -45,7 +30,22 @@ export class Browser extends Universal {
         }
     }
 
-    registerAngularModule(angular) {
+    immediateAll() {
+        var list = document.getElementsByTagName('img')
+        for (var i = 0; i < list.length; i++) {
+            this.immediate(list[i])
+        }
+    }
+
+    lazyload() {
+        return new LazyLoad({
+            data_src: 'src',
+            data_srcset: 'srcset',
+            callback_set: this.immediate
+        })
+    }
+
+    registerAngularJsModule(angular) {
         angular.module('tiny.pictures', []).filter('tinyPicturesUrl', () => this.url)
     }
 

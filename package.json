@@ -10,7 +10,6 @@
     "test:travis": "npm run test",
     "build": "babel src/universal.js --out-file dist/universal.js && webpack -p",
     "demo": "node demo",
-    "postinstall": "npm run build",
     "preversion": "npm run build && npm test",
     "version": "git add --all",
     "postversion": "git push origin master && npm publish"
