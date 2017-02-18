@@ -1,6 +1,6 @@
 {
   "name": "tiny.pictures-sdk-js",
-  "version": "0.43.3",
+  "version": "0.43.4",
   "description": "JavaScript SDK for tiny.pictures",
   "main": "dist/universal.js",
   "scripts": {
@@ -28,11 +28,11 @@
   "bugs": {
     "url": "https://github.com/erkstruwe/tiny.pictures-sdk-js/issues"
   },
-    "dependencies": {
-        "lodash": "^4.17.4",
-        "sync-is-private-host": "^0.1.2",
-        "urijs": "^1.18.7"
-    },
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "sync-is-private-host": "^0.1.2",
+    "urijs": "^1.18.7"
+  },
   "devDependencies": {
     "babel-cli": "^6.23.0",
     "babel-eslint": "^7.1.1",
