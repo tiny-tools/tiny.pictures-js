@@ -1,17 +1,17 @@
 {
   "name": "tiny.pictures-sdk-js",
-  "version": "0.43.4",
+  "version": "0.44.0",
   "description": "JavaScript SDK for tiny.pictures",
-    "main": "universal.js",
-    "browser": "browser.js",
+  "main": "universal.js",
+  "browser": "browser.js",
   "scripts": {
     "lint": "eslint .",
     "unit": "jasmine JASMINE_CONFIG_PATH=jasmine.json",
     "test": "npm run lint && npm run unit",
     "test:travis": "npm run test",
-      "build": "babel src/universal.js --out-file dist/universal.js && babel src/browser.js --out-file dist/browser.js && webpack -p",
+    "build": "babel src/universal.js --out-file dist/universal.js && babel src/browser.js --out-file dist/browser.js && webpack -p",
     "demo": "node demo",
-      "start": "npm run demo",
+    "start": "npm run demo",
     "preversion": "npm run build && npm test",
     "version": "git add --all",
     "postversion": "git push origin master && npm publish"

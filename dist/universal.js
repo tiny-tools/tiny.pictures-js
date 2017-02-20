@@ -183,7 +183,7 @@ var Universal = exports.Universal = function () {
             var srcsetArray = [];
             (0, _forEach2.default)(this._options.srcsetWidths, function (width) {
                 if (width >= originalWidth) return false;
-                srcsetArray.push(_this2.url(originalSrc, Object.assign({}, options, {width: width})) + ' ' + width + 'w');
+                srcsetArray.push(_this2.url(originalSrc, Object.assign({}, options, { width: width })) + ' ' + width + 'w');
             });
             srcsetArray.push(this.url(originalSrc, Object.assign({}, options, { width: originalWidth })) + ' ' + originalWidth + 'w');
             return srcsetArray;
