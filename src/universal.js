@@ -4,9 +4,10 @@ import forEach from 'lodash/forEach'
 import find from 'lodash/find'
 import startsWith from 'lodash/startsWith'
 import sample from 'lodash/sample'
+import range from 'lodash/range'
 import { isPrivate } from 'sync-is-private-host'
 
-export default class Universal {
+export class Universal {
     constructor(options = {}) {
         this._options = defaultsDeep(
             {},
@@ -51,7 +52,9 @@ export default class Universal {
                     case 'sports':
                     case 'technics':
                     case 'transport':
-                        this._overrideSourcesImages = ['http://lorempixel.com/1920/1920/' + this._options.overrideSourcesImages]
+                        this._overrideSourcesImages = range(1, 11).map((number) => {
+                            return 'http://lorempixel.com/1920/1920/' + this._options.overrideSourcesImages + '/' + number
+                        })
                         break
                     default:
                         this._overrideSourcesImages = [this._options.overrideSourcesImages]
@@ -136,5 +139,25 @@ export default class Universal {
         })
         srcsetArray.push(this.url(originalSrc, Object.assign({}, options, {width: originalWidth})) + ' ' + originalWidth + 'w')
         return srcsetArray
+    }
+
+    image(source = '', options = {}, attributes = {}, originalWidth = null) {
+        // src
+        attributes.src = options ? this.url(source, options) : source
+
+        // srcset
+        if (originalWidth) {
+            const srcsetArray = this.srcsetArray(source, originalWidth, options)
+            if (srcsetArray.length) {
+                attributes.srcset = srcsetArray.join(', ')
+            }
+        }
+
+        let img = '<img'
+        forEach(attributes, (val, key) => {
+            img += ' ' + key + '="' + val + '"'
+        })
+        img += '>'
+        return img
     }
 }

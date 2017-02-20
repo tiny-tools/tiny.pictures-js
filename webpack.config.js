@@ -1,6 +1,6 @@
 module.exports = {
     devtool: 'source-map',
-    entry: './src/entry.js',
+    entry: './entry.js',
     output: {
         path: 'dist',
         filename: 'tiny.pictures.min.js'

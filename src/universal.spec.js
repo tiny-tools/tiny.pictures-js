@@ -1,4 +1,4 @@
-import Universal from './universal'
+import { Universal } from './universal'
 
 describe('Universal', function () {
     describe('constructor', function () {
@@ -88,7 +88,26 @@ describe('Universal', function () {
                 overrideSourcesAlways: true
             })
             expect(this.universal.url('http://tiny.pictures/example1.jpg'))
-                .toBe('https://tiny.pictures/api/demo?source=http%3A%2F%2Florempixel.com%2F1920%2F1920%2Fcats')
+                .toMatch(/https:\/\/tiny.pictures\/api\/demo\?source=http%3A%2F%2Florempixel\.com%2F1920%2F1920%2Fcats%2F\d+/)
+        })
+    })
+
+    describe('image', function () {
+        beforeEach(function () {
+            this.universal = new Universal({user: 'demo'})
+            this.source = 'https://tiny.pictures/example1.jpg'
+            this.options = {quality: 50}
+            this.attributes = {class: 'col-xs-12 col-md-6'}
+            this.originalWidth = 800
+        })
+
+        it('should create a valid image tag', function () {
+            expect(this.universal.image(
+                this.source,
+                this.options,
+                this.attributes,
+                this.originalWidth
+            )).toBe('<img class="col-xs-12 col-md-6" src="' + this.universal.url(this.source, this.options) + '" srcset="' + this.universal.srcsetArray(this.source, this.originalWidth, this.options).join(', ') + '">')
         })
     })
 

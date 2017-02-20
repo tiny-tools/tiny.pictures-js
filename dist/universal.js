@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.Universal = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -32,14 +33,20 @@ var _sample = require('lodash/sample');
 
 var _sample2 = _interopRequireDefault(_sample);
 
+var _range = require('lodash/range');
+
+var _range2 = _interopRequireDefault(_range);
+
 var _syncIsPrivateHost = require('sync-is-private-host');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Universal = function () {
+var Universal = exports.Universal = function () {
     function Universal() {
+        var _this = this;
+
         var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
         _classCallCheck(this, Universal);
@@ -83,7 +90,9 @@ var Universal = function () {
                     case 'sports':
                     case 'technics':
                     case 'transport':
-                        this._overrideSourcesImages = ['http://lorempixel.com/1920/1920/' + this._options.overrideSourcesImages];
+                        this._overrideSourcesImages = (0, _range2.default)(1, 11).map(function (number) {
+                            return 'http://lorempixel.com/1920/1920/' + _this._options.overrideSourcesImages + '/' + number;
+                        });
                         break;
                     default:
                         this._overrideSourcesImages = [this._options.overrideSourcesImages];
@@ -169,19 +178,43 @@ var Universal = function () {
     }, {
         key: 'srcsetArray',
         value: function srcsetArray(originalSrc, originalWidth, options) {
-            var _this = this;
+            var _this2 = this;
 
             var srcsetArray = [];
             (0, _forEach2.default)(this._options.srcsetWidths, function (width) {
                 if (width >= originalWidth) return false;
-                srcsetArray.push(_this.url(originalSrc, Object.assign({}, options, { width: width })) + ' ' + width + 'w');
+                srcsetArray.push(_this2.url(originalSrc, Object.assign({}, options, {width: width})) + ' ' + width + 'w');
             });
             srcsetArray.push(this.url(originalSrc, Object.assign({}, options, { width: originalWidth })) + ' ' + originalWidth + 'w');
             return srcsetArray;
+        }
+    }, {
+        key: 'image',
+        value: function image() {
+            var source = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+            var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+            var attributes = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+            var originalWidth = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+
+            // src
+            attributes.src = options ? this.url(source, options) : source;
+
+            // srcset
+            if (originalWidth) {
+                var srcsetArray = this.srcsetArray(source, originalWidth, options);
+                if (srcsetArray.length) {
+                    attributes.srcset = srcsetArray.join(', ');
+                }
+            }
+
+            var img = '<img';
+            (0, _forEach2.default)(attributes, function (val, key) {
+                img += ' ' + key + '="' + val + '"';
+            });
+            img += '>';
+            return img;
         }
     }]);
 
     return Universal;
 }();
-
-exports.default = Universal;

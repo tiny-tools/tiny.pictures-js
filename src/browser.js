@@ -1,6 +1,6 @@
 import LazyLoad from 'vanilla-lazyload'
 
-import Universal from './universal'
+import { Universal } from './universal'
 
 export class Browser extends Universal {
     url(...args) {
@@ -58,8 +58,4 @@ export class Browser extends Universal {
             return this
         }
     }
-}
-
-export {
-    Browser as pictures
 }

@@ -1,7 +1,7 @@
 import jsdom from 'jsdom'
 
 import { Browser } from './browser'
-import Universal from './universal'
+import { Universal } from './universal'
 
 describe('Browser', function () {
     beforeEach(function () {
