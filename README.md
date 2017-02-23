@@ -1,4 +1,4 @@
-# tiny.pictures-sdk-js  [![Build Status](https://travis-ci.org/erkstruwe/tiny.pictures-sdk-js.svg?branch=master)](https://travis-ci.org/erkstruwe/tiny.pictures-sdk-js) [![Coverage Status](https://coveralls.io/repos/github/erkstruwe/tiny.pictures-sdk-js/badge.svg?branch=master)](https://coveralls.io/github/erkstruwe/tiny.pictures-sdk-js?branch=master)
+# tiny.pictures-js  [![Build Status](https://travis-ci.org/erkstruwe/tiny.pictures-js.svg?branch=master)](https://travis-ci.org/erkstruwe/tiny.pictures-sdk-js)
 JavaScript SDK for [tiny.pictures](https://tiny.pictures/)
 
 ## Features
@@ -9,4 +9,4 @@ JavaScript SDK for [tiny.pictures](https://tiny.pictures/)
 * Use in Node.js or the browser
 
 ## Documentation
-Visit https://tiny.pictures/documentation/js-sdk for demos and details.
+Visit https://tiny.pictures/documentation/js-library for demos and details.

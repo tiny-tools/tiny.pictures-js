@@ -2,7 +2,7 @@
   "name": "tiny.pictures-js",
   "version": "0.45.0",
   "description": "JavaScript library for tiny.pictures",
-  "main": "dist/index.js",
+  "main": "dist/universal.js",
   "scripts": {
     "lint": "eslint .",
     "unit": "jasmine JASMINE_CONFIG_PATH=jasmine.json",

@@ -8,7 +8,7 @@ import range from 'lodash/range'
 import { isPrivate } from 'sync-is-private-host'
 import LazyLoad from 'vanilla-lazyload'
 
-export default class TinyPictures {
+module.exports = class TinyPictures {
     constructor(options = {}) {
         this._options = defaults(
             {},

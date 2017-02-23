@@ -18,10 +18,14 @@
         <script src="/tiny.pictures.min.js"></script>
         <script>
             var tinyPicturesWithoutOverrideSources = new TinyPictures({
+                document: document,
+                location: location,
                 user: 'demo',
                 customSubdomain: true
             })
             var tinyPicturesWithOverrideSources = new TinyPictures({
+                document: document,
+                location: location,
                 user: 'demo',
                 customSubdomain: true,
                 overrideSourcesImages: 'cats'
