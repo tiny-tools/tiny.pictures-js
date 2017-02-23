@@ -1,18 +1,21 @@
 import urijs from 'urijs'
-import defaultsDeep from 'lodash/defaults'
+import defaults from 'lodash/defaults'
 import forEach from 'lodash/forEach'
 import find from 'lodash/find'
 import startsWith from 'lodash/startsWith'
 import sample from 'lodash/sample'
 import range from 'lodash/range'
 import { isPrivate } from 'sync-is-private-host'
+import LazyLoad from 'vanilla-lazyload'
 
-export class Universal {
+export default class TinyPictures {
     constructor(options = {}) {
-        this._options = defaultsDeep(
+        this._options = defaults(
             {},
             options,
             {
+                document: null,
+                location: null,
                 user: null,
                 namedSources: [],
                 overrideSourcesImages: [],
@@ -25,7 +28,8 @@ export class Universal {
         )
 
         // plausibility checks
-        if (!this._options.user) throw new Error('no user set')
+        if (!this._options.user)
+            throw 'no user set'
 
         // _overrideSources
         switch (typeof this._options.overrideSourcesImages) {
@@ -84,12 +88,22 @@ export class Universal {
                 }
                 break
             default:
-                this._apiBaseUrlObject = urijs.parse(this._options.customSubdomain)
+                this._apiBaseUrlObject = urijs.parse(this._options.customSubdomain + this._options.user)
                 break
         }
     }
 
-    url(source = '', options = {}, slashesDenoteHost = false, baseUrl = this._options.defaultBaseUrl) {
+    baseUrl() {
+        if (this._options.defaultBaseUrl) {
+            return this._options.defaultBaseUrl
+        } else if (this._options.location && this._options.location.href) {
+            return this._options.location.href
+        } else {
+            return ''
+        }
+    }
+
+    url(source = '', options = {}, slashesDenoteHost = false, baseUrl = this.baseUrl()) {
         if (!source) return null
 
         let baseUrlObject = baseUrl ? urijs(baseUrl).normalize() : null
@@ -159,5 +173,59 @@ export class Universal {
         })
         img += '>'
         return img
+    }
+
+    immediate(img, options) {
+        if (!options) {
+            const optionsString = img.getAttribute('data-tiny.pictures')
+            options = optionsString ? JSON.parse(optionsString) : null
+        }
+
+        const originalSrc = img.getAttribute('data-src') || img.getAttribute('src')
+        if (!originalSrc) return
+        const originalWidth = +img.getAttribute('data-tiny.pictures-width')
+
+        // src
+        img.setAttribute('src', options ? this.url(originalSrc, options) : originalSrc)
+
+        // srcset
+        if (originalWidth) {
+            const srcsetArray = this.srcsetArray(originalSrc, originalWidth, options)
+            if (srcsetArray.length) {
+                img.setAttribute('srcset', srcsetArray.join(', '))
+            }
+        }
+    }
+
+    immediateAll() {
+        const document = this._options.document
+        if (!document)
+            throw 'No document'
+        var list = document.getElementsByTagName('img')
+        for (var i = 0; i < list.length; i++) {
+            this.immediate(list[i])
+        }
+    }
+
+    lazyload() {
+        return new LazyLoad({
+            data_src: 'src',
+            data_srcset: 'srcset',
+            callback_set: this.immediate
+        })
+    }
+
+    registerAngularJsModule(angular) {
+        angular.module('tiny.pictures', []).filter('tinyPicturesUrl', () => this.url)
+    }
+
+    registerJQueryPlugin(jQuery) {
+        const self = this
+        jQuery.fn.tinyPictures = function (options) {
+            this.filter('img[data-src]').each(function () {
+                return self.immediate(this, options)
+            })
+            return this
+        }
     }
 }

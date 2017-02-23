@@ -3,7 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.Universal = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -39,19 +38,25 @@ var _range2 = _interopRequireDefault(_range);
 
 var _syncIsPrivateHost = require('sync-is-private-host');
 
+var _vanillaLazyload = require('vanilla-lazyload');
+
+var _vanillaLazyload2 = _interopRequireDefault(_vanillaLazyload);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Universal = exports.Universal = function () {
-    function Universal() {
+var TinyPictures = function () {
+    function TinyPictures() {
         var _this = this;
 
         var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-        _classCallCheck(this, Universal);
+        _classCallCheck(this, TinyPictures);
 
         this._options = (0, _defaults2.default)({}, options, {
+            document: null,
+            location: null,
             user: null,
             namedSources: [],
             overrideSourcesImages: [],
@@ -63,7 +68,7 @@ var Universal = exports.Universal = function () {
         });
 
         // plausibility checks
-        if (!this._options.user) throw new Error('no user set');
+        if (!this._options.user) throw 'no user set';
 
         // _overrideSources
         switch (_typeof(this._options.overrideSourcesImages)) {
@@ -122,18 +127,29 @@ var Universal = exports.Universal = function () {
                 };
                 break;
             default:
-                this._apiBaseUrlObject = _urijs2.default.parse(this._options.customSubdomain);
+                this._apiBaseUrlObject = _urijs2.default.parse(this._options.customSubdomain + this._options.user);
                 break;
         }
     }
 
-    _createClass(Universal, [{
+    _createClass(TinyPictures, [{
+        key: 'baseUrl',
+        value: function baseUrl() {
+            if (this._options.defaultBaseUrl) {
+                return this._options.defaultBaseUrl;
+            } else if (this._options.location && this._options.location.href) {
+                return this._options.location.href;
+            } else {
+                return '';
+            }
+        }
+    }, {
         key: 'url',
         value: function url() {
             var source = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
             var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
             var slashesDenoteHost = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-            var baseUrl = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : this._options.defaultBaseUrl;
+            var baseUrl = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : this.baseUrl();
 
             if (!source) return null;
 
@@ -214,7 +230,71 @@ var Universal = exports.Universal = function () {
             img += '>';
             return img;
         }
+    }, {
+        key: 'immediate',
+        value: function immediate(img, options) {
+            if (!options) {
+                var optionsString = img.getAttribute('data-tiny.pictures');
+                options = optionsString ? JSON.parse(optionsString) : null;
+            }
+
+            var originalSrc = img.getAttribute('data-src') || img.getAttribute('src');
+            if (!originalSrc) return;
+            var originalWidth = +img.getAttribute('data-tiny.pictures-width');
+
+            // src
+            img.setAttribute('src', options ? this.url(originalSrc, options) : originalSrc);
+
+            // srcset
+            if (originalWidth) {
+                var srcsetArray = this.srcsetArray(originalSrc, originalWidth, options);
+                if (srcsetArray.length) {
+                    img.setAttribute('srcset', srcsetArray.join(', '));
+                }
+            }
+        }
+    }, {
+        key: 'immediateAll',
+        value: function immediateAll() {
+            var document = this._options.document;
+            if (!document) throw 'No document';
+            var list = document.getElementsByTagName('img');
+            for (var i = 0; i < list.length; i++) {
+                this.immediate(list[i]);
+            }
+        }
+    }, {
+        key: 'lazyload',
+        value: function lazyload() {
+            return new _vanillaLazyload2.default({
+                data_src: 'src',
+                data_srcset: 'srcset',
+                callback_set: this.immediate
+            });
+        }
+    }, {
+        key: 'registerAngularJsModule',
+        value: function registerAngularJsModule(angular) {
+            var _this3 = this;
+
+            angular.module('tiny.pictures', []).filter('tinyPicturesUrl', function () {
+                return _this3.url;
+            });
+        }
+    }, {
+        key: 'registerJQueryPlugin',
+        value: function registerJQueryPlugin(jQuery) {
+            var self = this;
+            jQuery.fn.tinyPictures = function (options) {
+                this.filter('img[data-src]').each(function () {
+                    return self.immediate(this, options);
+                });
+                return this;
+            };
+        }
     }]);
 
-    return Universal;
+    return TinyPictures;
 }();
+
+exports.default = TinyPictures;
