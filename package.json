@@ -32,7 +32,8 @@
   "dependencies": {
     "lodash": "^4.17.4",
     "sync-is-private-host": "^0.1.2",
-    "urijs": "^1.18.7"
+    "urijs": "^1.18.7",
+    "vanilla-lazyload": "^4.0.4"
   },
   "devDependencies": {
     "babel-cli": "^6.23.0",
@@ -46,7 +47,6 @@
     "jasmine-es6": "^0.4.0",
     "jsdom": "^9.11.0",
     "serve-index": "^1.8.0",
-    "vanilla-lazyload": "^4.0.4",
     "webpack": "^2.2.1",
     "winston": "^2.3.1"
   }
