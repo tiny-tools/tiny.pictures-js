@@ -76,7 +76,7 @@ module.exports = class TinyPictures {
                     protocol: this._options.protocol,
                     hostname: 'tiny.pictures',
                     port: null,
-                    path: '/api/' + this._options.user
+                    path: '/api/' + this._options.user + '/'
                 }
                 break
             case true:
@@ -88,7 +88,7 @@ module.exports = class TinyPictures {
                 }
                 break
             default:
-                this._apiBaseUrlObject = urijs.parse(this._options.customSubdomain + this._options.user)
+                this._apiBaseUrlObject = urijs.parse(this._options.customSubdomain + this._options.user + '/')
                 break
         }
     }

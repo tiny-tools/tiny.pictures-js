@@ -43,17 +43,17 @@ describe('TinyPictures', function () {
         })
         it('should convert urls to a tiny.pictures url', function () {
             expect(this.tinyPictures.url('http://tiny.pictures/example1.jpg'))
-                .toBe('https://tiny.pictures/api/demo?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
+                .toBe('https://tiny.pictures/api/demo/?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
             expect(this.tinyPictures.url('http://tiny.pictures:80/example1.jpg'))
-                .toBe('https://tiny.pictures/api/demo?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
+                .toBe('https://tiny.pictures/api/demo/?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
             expect(this.tinyPictures.url('http://tiny.pictures:1336/example1.jpg'))
-                .toBe('https://tiny.pictures/api/demo?source=http%3A%2F%2Ftiny.pictures%3A1336%2Fexample1.jpg')
+                .toBe('https://tiny.pictures/api/demo/?source=http%3A%2F%2Ftiny.pictures%3A1336%2Fexample1.jpg')
             expect(this.tinyPictures.url('http://tiny.pictures:1336/example1.jpg?test=true'))
-                .toBe('https://tiny.pictures/api/demo?source=http%3A%2F%2Ftiny.pictures%3A1336%2Fexample1.jpg%3Ftest%3Dtrue')
+                .toBe('https://tiny.pictures/api/demo/?source=http%3A%2F%2Ftiny.pictures%3A1336%2Fexample1.jpg%3Ftest%3Dtrue')
         })
         it('should append options to query string', function () {
             expect(this.tinyPictures.url('http://tiny.pictures/example1.jpg', {width: 100}))
-                .toBe('https://tiny.pictures/api/demo?width=100&source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
+                .toBe('https://tiny.pictures/api/demo/?width=100&source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
         })
         it('should throw if no hostname or protocol is set and no location.href is present', function () {
             expect(() => this.tinyPictures.url('/example1.jpg')).toThrow()
@@ -61,29 +61,29 @@ describe('TinyPictures', function () {
         })
         it('should complement with baseUrl if no hostname or protocol is set', function () {
             expect(this.tinyPictures.url('/example1.jpg', {}, null, 'http://tiny.pictures/path/to'))
-                .toBe('https://tiny.pictures/api/demo?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
+                .toBe('https://tiny.pictures/api/demo/?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
             expect(this.tinyPictures.url('example1.jpg', {}, null, 'http://tiny.pictures/path/to'))
-                .toBe('https://tiny.pictures/api/demo?source=http%3A%2F%2Ftiny.pictures%2Fpath%2Fexample1.jpg')
+                .toBe('https://tiny.pictures/api/demo/?source=http%3A%2F%2Ftiny.pictures%2Fpath%2Fexample1.jpg')
             expect(this.tinyPictures.url('example1.jpg', {}, null, 'http://tiny.pictures/path/to/'))
-                .toBe('https://tiny.pictures/api/demo?source=http%3A%2F%2Ftiny.pictures%2Fpath%2Fto%2Fexample1.jpg')
+                .toBe('https://tiny.pictures/api/demo/?source=http%3A%2F%2Ftiny.pictures%2Fpath%2Fto%2Fexample1.jpg')
         })
         it('should respect defaultBaseUrl option', function () {
             this.tinyPictures = new TinyPictures({user: 'demo', defaultBaseUrl: 'http://tiny.pictures/path/to'})
-            expect(this.tinyPictures.url('/example1.jpg')).toBe('https://tiny.pictures/api/demo?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
+            expect(this.tinyPictures.url('/example1.jpg')).toBe('https://tiny.pictures/api/demo/?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
         })
         it('should respect the slashesDenoteHost parameter', function () {
             expect(this.tinyPictures.url('//tiny.pictures/example1.jpg', {}, true, 'http://tiny.pictures/path/to'))
-                .toBe('https://tiny.pictures/api/demo?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
+                .toBe('https://tiny.pictures/api/demo/?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
             expect(this.tinyPictures.url('//tiny.pictures/example1.jpg', {}, true, 'https://tiny.pictures/path/to'))
-                .toBe('https://tiny.pictures/api/demo?source=https%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
+                .toBe('https://tiny.pictures/api/demo/?source=https%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
             expect(this.tinyPictures.url('//tiny.pictures/example1.jpg', {}, false, 'http://tiny.pictures/path/to'))
-                .toBe('https://tiny.pictures/api/demo?source=http%3A%2F%2Ftiny.pictures%2Ftiny.pictures%2Fexample1.jpg')
+                .toBe('https://tiny.pictures/api/demo/?source=http%3A%2F%2Ftiny.pictures%2Ftiny.pictures%2Fexample1.jpg')
             expect(this.tinyPictures.url('//example1.jpg', {}, true, 'http://tiny.pictures/path/to'))
-                .toBe('https://tiny.pictures/api/demo?source=http%3A%2F%2Fexample1.jpg%2F')
+                .toBe('https://tiny.pictures/api/demo/?source=http%3A%2F%2Fexample1.jpg%2F')
             expect(this.tinyPictures.url('//example1.jpg', {}, false, 'http://tiny.pictures/path/to'))
-                .toBe('https://tiny.pictures/api/demo?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
+                .toBe('https://tiny.pictures/api/demo/?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
             expect(this.tinyPictures.url('//example1.jpg', {}, false, 'http://tiny.pictures:1336/path/to'))
-                .toBe('https://tiny.pictures/api/demo?source=http%3A%2F%2Ftiny.pictures%3A1336%2Fexample1.jpg')
+                .toBe('https://tiny.pictures/api/demo/?source=http%3A%2F%2Ftiny.pictures%3A1336%2Fexample1.jpg')
         })
         it('should use named sources', function () {
             const originalNamedSources = this.tinyPictures._options.namedSources
@@ -108,7 +108,7 @@ describe('TinyPictures', function () {
                 overrideSourcesAlways: true
             })
             expect(this.tinyPictures.url('http://tiny.pictures/example1.jpg'))
-                .toMatch(/https:\/\/tiny.pictures\/api\/demo\?source=http%3A%2F%2Florempixel\.com%2F1920%2F1920%2Fcats%2F\d+/)
+                .toMatch(/https:\/\/tiny.pictures\/api\/demo\/\?source=http%3A%2F%2Florempixel\.com%2F1920%2F1920%2Fcats%2F\d+/)
         })
         it('should use location.href', function () {
             const baseUrl = 'http://tiny.pictures/path/to'
@@ -228,10 +228,9 @@ describe('TinyPictures', function () {
         it('should set the src attribute of all images', function () {
             this.tinyPictures.immediateAll()
             const images = this.document.getElementsByTagName('img')
-            expect(images[0].getAttribute('src')).toBe('https://tiny.pictures/api/demo?width=200&source=https%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
+            expect(images[0].getAttribute('src')).toBe('https://tiny.pictures/api/demo/?width=200&source=https%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
             expect(images[1].getAttribute('src')).toBe('https://tiny.pictures/example2.jpg')
         })
     })
-
 
 })
