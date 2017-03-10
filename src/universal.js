@@ -216,7 +216,7 @@ module.exports = class TinyPictures {
     }
 
     registerAngularJsModule(angular) {
-        angular.module('tiny.pictures', []).filter('tinyPicturesUrl', () => this.url)
+        angular.module('tiny.pictures', []).filter('tinyPicturesUrl', () => this.url.bind(this))
     }
 
     registerJQueryPlugin(jQuery) {

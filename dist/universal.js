@@ -274,7 +274,7 @@ module.exports = function () {
             var _this3 = this;
 
             angular.module('tiny.pictures', []).filter('tinyPicturesUrl', function () {
-                return _this3.url;
+                return _this3.url.bind(_this3);
             });
         }
     }, {
