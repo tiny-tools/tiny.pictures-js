@@ -14,7 +14,7 @@ describe('TinyPictures', function () {
             expect((new TinyPictures({
                 user: 'demo',
                 customSubdomain: true
-            }))._apiBaseUrlObject.hostname).toBe('api.tiny.pictures')
+            }))._apiBaseUrlObject.hostname).toBe('demo.tiny.pictures')
             expect((new TinyPictures({
                 user: 'demo',
                 customSubdomain: 'http://api.localhost:1336/'
@@ -92,6 +92,14 @@ describe('TinyPictures', function () {
             this.tinyPictures.namedSources = [{name: 'main', url: 'https://tiny.pictures/'}]
             expect(this.tinyPictures.url('https://tiny.pictures/example1.jpg')).toBe('https://tiny.pictures/api/demo/main/example1.jpg')
             this.tinyPictures._options.namedSources = originalNamedSources
+        })
+        it('should use named sources with customSubdomain', function () {
+            this.tinyPictures = new TinyPictures({
+                user: 'demo',
+                customSubdomain: true,
+                namedSources: [{name: 'main', url: 'https://tiny.pictures'}]
+            })
+            expect(this.tinyPictures.url('https://tiny.pictures/example1.jpg')).toBe('https://demo.tiny.pictures/main/example1.jpg')
         })
         it('should respect overrideSources', function() {
             this.tinyPictures = new TinyPictures({

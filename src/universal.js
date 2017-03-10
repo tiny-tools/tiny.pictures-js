@@ -82,9 +82,9 @@ module.exports = class TinyPictures {
             case true:
                 this._apiBaseUrlObject = {
                     protocol: this._options.protocol,
-                    hostname: 'api.tiny.pictures', // TODO: this._options.user
+                    hostname: this._options.user + '.tiny.pictures',
                     port: null,
-                    path: '/' + this._options.user
+                    path: '/'
                 }
                 break
             default:
