@@ -1,6 +1,6 @@
 {
   "name": "tiny.pictures-js",
-  "version": "0.46.2",
+  "version": "0.46.3",
   "description": "JavaScript library for tiny.pictures",
   "main": "dist/universal.js",
   "scripts": {
@@ -33,7 +33,7 @@
     "lodash": "^4.17.4",
     "sync-is-private-host": "^0.1.2",
     "urijs": "^1.18.7",
-      "vanilla-lazyload": "~4.0.4"
+    "vanilla-lazyload": "~4.0.4"
   },
   "devDependencies": {
     "babel-cli": "^6.23.0",
