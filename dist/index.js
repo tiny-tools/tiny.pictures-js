@@ -125,6 +125,9 @@ var TinyPictures = function () {
             });
             this._options.window.document.addEventListener('lazybeforeunveil', function (event) {
                 event.target.setAttribute('data-src', _this.url(event.target.getAttribute('data-tp-src'), _this._mergedOptions(event.target)));
+                if (event.target.getAttribute('data-tp-srcset') === '{width}') {
+                    event.target.setAttribute('data-srcset', _this.srcsetArray(event.target.getAttribute('data-tp-src'), _this._mergedOptions(event.target)).join(', '));
+                }
             });
         }
     }
