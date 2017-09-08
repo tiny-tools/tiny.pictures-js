@@ -128,6 +128,15 @@ class TinyPictures {
                         this._mergedOptions(event.target)
                     )
                 )
+                if (event.target.getAttribute('data-tp-srcset') === '{width}') {
+                    event.target.setAttribute(
+                        'data-srcset',
+                        this.srcsetArray(
+                            event.target.getAttribute('data-tp-src'),
+                            this._mergedOptions(event.target)
+                        ).join(', ')
+                    )
+                }
             })
         }
     }
