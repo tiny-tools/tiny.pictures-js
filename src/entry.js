@@ -1,1 +1,1 @@
-require('expose-loader?TinyPictures!./universal')
+require('expose-loader?TinyPictures!./index')

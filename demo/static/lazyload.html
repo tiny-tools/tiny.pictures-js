@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.7.1/slick.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.7.1/slick-theme.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.7.1/slick.min.js"></script>
+        <script src="/tiny.pictures.min.js"></script>
+        <script>
+            var tinyPictures = new TinyPictures({
+                window: window,
+                user: 'demo',
+                namedSources: [
+                    {name: 'main', url: 'https://tiny.pictures/'}
+                ]
+            })
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Lazyload</h1>
+            <!--
+            <h2>Normal image</h2>
+            <p><img class="img-fluid" src="https://tiny.pictures/example1.jpg"></p>
+            <h2>Unveil manually</h2>
+            <p><img id="unveil" class="img-fluid" data-tp-src="https://tiny.pictures/example1.jpg"></p>
+            <script>
+                tinyPictures.unveil(document.getElementById('unveil'))
+            </script>
+            <h2>Simple src</h2>
+            <p><img class="img-fluid tp-lazyload" data-tp-src="https://tiny.pictures/example1.jpg"></p>
+            <h2>Simple src with options</h2>
+            <p><img class="img-fluid tp-lazyload" data-tp-src="https://tiny.pictures/example1.jpg" data-tp-options='{"grayscale": true}'></p>
+            <h2>Simple srcset</h2>
+            <p><img class="img-fluid tp-lazyload" data-tp-src="https://tiny.pictures/example1.jpg" data-tp-srcset="{width}" data-tp-sizes="auto"></p>
+            <h2>Simple srcset with options</h2>
+            <p><img class="img-fluid tp-lazyload" data-tp-src="https://tiny.pictures/example1.jpg" data-tp-options='{"grayscale": true}' data-tp-srcset="{width}" data-tp-sizes="auto"></p>
+            <h2>In slider src with options</h2>
+            <div class="slick-src">
+                <div><img class="img-fluid tp-lazyload" data-tp-src="https://tiny.pictures/example1.jpg" data-tp-options='{"quality": 10}'></div>
+                <div><img class="img-fluid tp-lazyload" data-tp-src="https://tiny.pictures/example2.jpg" data-tp-options='{"quality": 10}'></div>
+                <div><img class="img-fluid tp-lazyload" data-tp-src="https://tiny.pictures/example3.jpg" data-tp-options='{"quality": 10}'></div>
+                <div><img class="img-fluid tp-lazyload" data-tp-src="https://tiny.pictures/example4.jpg" data-tp-options='{"quality": 10}'></div>
+                <div><img class="img-fluid tp-lazyload" data-tp-src="https://tiny.pictures/example5.jpg" data-tp-options='{"quality": 10}'></div>
+                <div><img class="img-fluid tp-lazyload" data-tp-src="https://tiny.pictures/example6.jpg" data-tp-options='{"quality": 10}'></div>
+                <div><img class="img-fluid tp-lazyload" data-tp-src="https://tiny.pictures/example7.jpg" data-tp-options='{"quality": 10}'></div>
+            </div>
+            <script>
+                $(document).ready(function(){
+                    $('.slick-src').slick({
+                        arrows: false,
+                        dots: true
+                    })
+                })
+            </script>
+            -->
+            <h2>In slider srcset</h2>
+            <div class="slick-srcset">
+                <div><img class="img-fluid tp-lazyload" data-tp-src="https://tiny.pictures/example1.jpg" data-tp-srcset="{width}" data-tp-sizes="auto"></div>
+                <div><img class="img-fluid tp-lazyload" data-tp-src="https://tiny.pictures/example2.jpg" data-tp-srcset="{width}" data-tp-sizes="auto"></div>
+                <div><img class="img-fluid tp-lazyload" data-tp-src="https://tiny.pictures/example3.jpg" data-tp-srcset="{width}" data-tp-sizes="auto"></div>
+                <div><img class="img-fluid tp-lazyload" data-tp-src="https://tiny.pictures/example4.jpg" data-tp-srcset="{width}" data-tp-sizes="auto"></div>
+                <div><img class="img-fluid tp-lazyload" data-tp-src="https://tiny.pictures/example5.jpg" data-tp-srcset="{width}" data-tp-sizes="auto"></div>
+                <div><img class="img-fluid tp-lazyload" data-tp-src="https://tiny.pictures/example6.jpg" data-tp-srcset="{width}" data-tp-sizes="auto"></div>
+                <div><img class="img-fluid tp-lazyload" data-tp-src="https://tiny.pictures/example7.jpg" data-tp-srcset="{width}" data-tp-sizes="auto"></div>
+            </div>
+            <script>
+                $(document).ready(function(){
+                    $('.slick-srcset').slick({
+                        arrows: false,
+                        dots: true
+                    })
+                })
+            </script>
+            <!--
+            <h2>In slider without tiny.pictures</h2>
+            <div class="slick-lazy">
+                <div><img class="img-fluid" data-lazy="https://tiny.pictures/example1.jpg"></div>
+                <div><img class="img-fluid" data-lazy="https://tiny.pictures/example2.jpg"></div>
+                <div><img class="img-fluid" data-lazy="https://tiny.pictures/example3.jpg"></div>
+                <div><img class="img-fluid" data-lazy="https://tiny.pictures/example4.jpg"></div>
+                <div><img class="img-fluid" data-lazy="https://tiny.pictures/example5.jpg"></div>
+                <div><img class="img-fluid" data-lazy="https://tiny.pictures/example6.jpg"></div>
+                <div><img class="img-fluid" data-lazy="https://tiny.pictures/example7.jpg"></div>
+            </div>
+            <script>
+                $(document).ready(function(){
+                    $('.slick-lazy').slick({
+                        arrows: false,
+                        dots: true
+                    })
+                })
+            </script>
+            -->
+            <script>
+                tinyPictures.lazyload()
+            </script>
+        </div>
+    </body>
+</html>

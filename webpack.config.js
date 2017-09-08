@@ -1,8 +1,10 @@
+const path = require('path')
+
 module.exports = {
     devtool: 'source-map',
     entry: './src/entry.js',
     output: {
-        path: 'dist',
+        path: path.join(__dirname, 'dist'),
         filename: 'tiny.pictures.min.js'
     },
     module: {

@@ -12,6 +12,9 @@ app.get('/tiny.pictures.min.js', (req, res) => res.sendFile(path.join(__dirname,
 app.get('/tiny.pictures.min.js.map', (req, res) => res.sendFile(path.join(__dirname, '../dist/tiny.pictures.min.js.map')))
 
 app.listen(port, (e) => {
-    if (e) return logger.error(e)
-    logger.info('listening in port', port)
+    if (e) {
+        return logger.error(e)
+    }
+
+    return logger.info('listening in port', port)
 })

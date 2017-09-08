@@ -1,31 +1,43 @@
-import urijs from 'urijs'
-import defaults from 'lodash/defaults'
-import forEach from 'lodash/forEach'
-import find from 'lodash/find'
-import startsWith from 'lodash/startsWith'
-import sample from 'lodash/sample'
-import range from 'lodash/range'
-import { isPrivate } from 'sync-is-private-host'
-import LazyLoad from 'vanilla-lazyload'
+const urijs = require('urijs')
+const defaultsDeep = require('lodash/defaultsDeep')
+const forEach = require('lodash/forEach')
+const find = require('lodash/find')
+const startsWith = require('lodash/startsWith')
+const sample = require('lodash/sample')
+const range = require('lodash/range')
+const isPrivate = require('sync-is-private-host').isPrivate
 
-module.exports = class TinyPictures {
-    constructor(options = {}) {
-        this._options = defaults(
+class TinyPictures {
+    constructor(options) {
+        this._options = defaultsDeep(
             {},
             options,
             {
-                document: null,
-                location: null,
+                window: null,
                 user: null,
                 namedSources: [],
                 overrideSourcesImages: [],
                 overrideSourcesAlways: false,
-                customSubdomain: false,
+                customSubdomain: true,
                 protocol: 'https',
                 defaultBaseUrl: '',
-                srcsetWidths: [10, 25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3250, 3500, 3750, 4000, 4250, 4500, 4750, 5000]
+                srcsetWidths: [50, 75, 100, 120, 180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 1944, 2160, 2376, 2592, 2808, 3024],
+                lazySizesConfig: {
+                    lazyClass: 'tp-lazyload',
+                    preloadClass: 'tp-lazypreload',
+                    loadingClass: 'tp-lazyloading',
+                    loadedClass: 'tp-lazyloaded',
+                    sizesAttr: 'data-tp-sizes',
+                    loadMode: 3,
+                    init: false,
+                    rias: {
+                        srcAttr: 'data-tp-srcset',
+                    }
+                }
             }
         )
+        this._options.lazySizesConfig.rias.widths = this._options.srcsetWidths
+
 
         // plausibility checks
         if (!this._options.user)
@@ -91,13 +103,46 @@ module.exports = class TinyPictures {
                 this._apiBaseUrlObject = urijs.parse(this._options.customSubdomain + this._options.user + '/')
                 break
         }
+
+        // lazySizes
+        if (typeof window !== 'undefined') {
+            const lazySizesBackup = window.lazySizes
+            const lazySizesConfigBackup = window.lazySizesConfig
+            window.lazySizesConfig = this._options.lazySizesConfig
+            this._lazySizesRias = require('lazysizes/plugins/rias/ls.rias.js')
+            this._lazySizes = require('lazysizes')
+            window.lazySizes = lazySizesBackup
+            window.lazySizesConfig = lazySizesConfigBackup
+
+            this._options.window.document.addEventListener('lazyriasmodifyoptions', (event) => {
+                event.detail.width = this.url(
+                    event.target.getAttribute('data-tp-src'),
+                    this._mergedOptions(event.target, {width: '{width}'})
+                )
+            })
+            this._options.window.document.addEventListener('lazybeforeunveil', (event) => {
+                event.target.setAttribute(
+                    'data-src',
+                    this.url(
+                        event.target.getAttribute('data-tp-src'),
+                        this._mergedOptions(event.target)
+                    )
+                )
+            })
+        }
+    }
+
+    _mergedOptions(img, overrideOptions) {
+        const optionsString = img.getAttribute('data-tp-options')
+        const options = optionsString ? JSON.parse(optionsString) : {}
+        return Object.assign({}, options, overrideOptions)
     }
 
     baseUrl() {
         if (this._options.defaultBaseUrl) {
             return this._options.defaultBaseUrl
-        } else if (this._options.location && this._options.location.href) {
-            return this._options.location.href
+        } else if (this._options.window && this._options.window.location && this._options.window.location.href) {
+            return this._options.window.location.href
         } else {
             return ''
         }
@@ -142,16 +187,14 @@ module.exports = class TinyPictures {
             urlObject.addQuery('source', sourceUrl)
         }
 
-        return urlObject.toString()
+        return urlObject.toString().replace(/%7Bwidth%7D/gi, '{width}')
     }
 
-    srcsetArray(originalSrc, originalWidth, options) {
+    srcsetArray(originalSrc, options) {
         let srcsetArray = []
         forEach(this._options.srcsetWidths, (width) => {
-            if (width >= originalWidth) return false
             srcsetArray.push(this.url(originalSrc, Object.assign({}, options, {width: width})) + ' ' + width + 'w')
         })
-        srcsetArray.push(this.url(originalSrc, Object.assign({}, options, {width: originalWidth})) + ' ' + originalWidth + 'w')
         return srcsetArray
     }
 
@@ -175,44 +218,20 @@ module.exports = class TinyPictures {
         return img
     }
 
-    immediate(img, options) {
-        if (!options) {
-            const optionsString = img.getAttribute('data-tiny.pictures')
-            options = optionsString ? JSON.parse(optionsString) : null
-        }
-
-        const originalSrc = img.getAttribute('data-src') || img.getAttribute('src')
-        if (!originalSrc) return
-        const originalWidth = +img.getAttribute('data-tiny.pictures-width')
-
-        // src
-        img.setAttribute('src', options ? this.url(originalSrc, options) : originalSrc)
-
-        // srcset
-        if (originalWidth) {
-            const srcsetArray = this.srcsetArray(originalSrc, originalWidth, options)
-            if (srcsetArray.length) {
-                img.setAttribute('srcset', srcsetArray.join(', '))
-            }
-        }
+    unveil(img) {
+        return this._lazySizes.loader.unveil(img)
     }
 
-    immediateAll() {
-        const document = this._options.document
-        if (!document)
-            throw 'No document'
+    unveilAll() {
+        const document = this._options.window.document
         var list = document.getElementsByTagName('img')
         for (var i = 0; i < list.length; i++) {
-            this.immediate(list[i])
+            this.unveil(list[i])
         }
     }
 
     lazyload() {
-        return new LazyLoad({
-            data_src: 'src',
-            data_srcset: 'srcset',
-            callback_set: this.immediate
-        })
+        this._lazySizes.init()
     }
 
     registerAngularJsModule(angular) {
@@ -221,11 +240,13 @@ module.exports = class TinyPictures {
 
     registerJQueryPlugin(jQuery) {
         const self = this
-        jQuery.fn.tinyPictures = function (options) {
-            this.filter('img[data-src]').each(function () {
-                return self.immediate(this, options)
+        jQuery.fn.tinyPictures = function () {
+            this.filter('img').each(function () {
+                return self.unveil(this)
             })
             return this
         }
     }
 }
+
+module.exports = TinyPictures
