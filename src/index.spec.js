@@ -59,30 +59,24 @@ describe('TinyPictures', function () {
             expect(() => this.tinyPictures.url('//tiny.pictures/example1.jpg')).toThrow()
         })
         it('should complement with baseUrl if no hostname or protocol is set', function () {
-            expect(this.tinyPictures.url('/example1.jpg', {}, null, 'http://tiny.pictures/path/to'))
+            expect(this.tinyPictures.url('/example1.jpg', {}, 'http://tiny.pictures/path/to'))
                 .toBe('https://demo.tiny.pictures/?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
-            expect(this.tinyPictures.url('example1.jpg', {}, null, 'http://tiny.pictures/path/to'))
+            expect(this.tinyPictures.url('example1.jpg', {}, 'http://tiny.pictures/path/to'))
                 .toBe('https://demo.tiny.pictures/?source=http%3A%2F%2Ftiny.pictures%2Fpath%2Fexample1.jpg')
-            expect(this.tinyPictures.url('example1.jpg', {}, null, 'http://tiny.pictures/path/to/'))
+            expect(this.tinyPictures.url('example1.jpg', {}, 'http://tiny.pictures/path/to/'))
                 .toBe('https://demo.tiny.pictures/?source=http%3A%2F%2Ftiny.pictures%2Fpath%2Fto%2Fexample1.jpg')
         })
         it('should respect defaultBaseUrl option', function () {
             this.tinyPictures = new TinyPictures({user: 'demo', defaultBaseUrl: 'http://tiny.pictures/path/to'})
             expect(this.tinyPictures.url('/example1.jpg')).toBe('https://demo.tiny.pictures/?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
         })
-        it('should respect the slashesDenoteHost parameter', function () {
-            expect(this.tinyPictures.url('//tiny.pictures/example1.jpg', {}, true, 'http://tiny.pictures/path/to'))
+        it('should add the protocol for urls starting with a double slash', function () {
+            expect(this.tinyPictures.url('//tiny.pictures/example1.jpg', {}, 'http://tiny.pictures/path/to'))
                 .toBe('https://demo.tiny.pictures/?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
-            expect(this.tinyPictures.url('//tiny.pictures/example1.jpg', {}, true, 'https://tiny.pictures/path/to'))
+            expect(this.tinyPictures.url('//tiny.pictures/example1.jpg', {}, 'https://tiny.pictures/path/to'))
                 .toBe('https://demo.tiny.pictures/?source=https%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
-            expect(this.tinyPictures.url('//tiny.pictures/example1.jpg', {}, false, 'http://tiny.pictures/path/to'))
-                .toBe('https://demo.tiny.pictures/?source=http%3A%2F%2Ftiny.pictures%2Ftiny.pictures%2Fexample1.jpg')
-            expect(this.tinyPictures.url('//example1.jpg', {}, true, 'http://tiny.pictures/path/to'))
+            expect(this.tinyPictures.url('//example1.jpg', {}, 'http://tiny.pictures/path/to'))
                 .toBe('https://demo.tiny.pictures/?source=http%3A%2F%2Fexample1.jpg%2F')
-            expect(this.tinyPictures.url('//example1.jpg', {}, false, 'http://tiny.pictures/path/to'))
-                .toBe('https://demo.tiny.pictures/?source=http%3A%2F%2Ftiny.pictures%2Fexample1.jpg')
-            expect(this.tinyPictures.url('//example1.jpg', {}, false, 'http://tiny.pictures:1336/path/to'))
-                .toBe('https://demo.tiny.pictures/?source=http%3A%2F%2Ftiny.pictures%3A1336%2Fexample1.jpg')
         })
         it('should use named sources', function () {
             const originalNamedSources = this.tinyPictures._options.namedSources
@@ -111,7 +105,7 @@ describe('TinyPictures', function () {
         })
         it('should use location.href', function () {
             const baseUrl = 'https://tiny.pictures/path/to'
-            expect(this.tinyPictures.url('/example1.jpg')).toBe(this.tinyPictures.url('/example1.jpg', undefined, undefined, baseUrl))
+            expect(this.tinyPictures.url('/example1.jpg')).toBe(this.tinyPictures.url('/example1.jpg', null, baseUrl))
         })
     })
 

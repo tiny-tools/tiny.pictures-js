@@ -157,12 +157,12 @@ class TinyPictures {
         }
     }
 
-    url(source = '', options = {}, slashesDenoteHost = false, baseUrl = this.baseUrl()) {
+    url(source = '', options = {}, baseUrl = this.baseUrl()) {
         if (!source) return null
 
         let baseUrlObject = baseUrl ? urijs(baseUrl).normalize() : null
         if (source.indexOf('//') === 0 && baseUrlObject) {
-            source = source.replace(/^\/\//, baseUrlObject.protocol() + '://' + (slashesDenoteHost ? '' : baseUrlObject.host() + '/'))
+            source = baseUrlObject.protocol() + ':' + source
         }
         let sourceObject = urijs(source).normalize()
         if ((!sourceObject.protocol() || !sourceObject.hostname()) && baseUrl) {
