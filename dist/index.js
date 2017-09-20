@@ -155,14 +155,13 @@ var TinyPictures = function () {
         value: function url() {
             var source = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
             var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-            var slashesDenoteHost = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-            var baseUrl = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : this.baseUrl();
+            var baseUrl = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this.baseUrl();
 
             if (!source) return null;
 
             var baseUrlObject = baseUrl ? urijs(baseUrl).normalize() : null;
             if (source.indexOf('//') === 0 && baseUrlObject) {
-                source = source.replace(/^\/\//, baseUrlObject.protocol() + '://' + (slashesDenoteHost ? '' : baseUrlObject.host() + '/'));
+                source = baseUrlObject.protocol() + ':' + source;
             }
             var sourceObject = urijs(source).normalize();
             if ((!sourceObject.protocol() || !sourceObject.hostname()) && baseUrl) {

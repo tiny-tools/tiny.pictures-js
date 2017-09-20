@@ -21,7 +21,27 @@ class TinyPictures {
                 customSubdomain: true,
                 protocol: 'https',
                 defaultBaseUrl: '',
-                srcsetWidths: [50, 75, 100, 120, 180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 1944, 2160, 2376, 2592, 2808, 3024],
+                srcsetWidths: [
+                    50,
+                    75,
+                    100,
+                    120,
+                    180,
+                    360,
+                    540,
+                    720,
+                    900,
+                    1080,
+                    1296,
+                    1512,
+                    1728,
+                    1944,
+                    2160,
+                    2376,
+                    2592,
+                    2808,
+                    3024
+                ],
                 lazySizesConfig: {
                     lazyClass: 'tp-lazyload',
                     preloadClass: 'tp-lazypreload',
@@ -38,10 +58,10 @@ class TinyPictures {
         )
         this._options.lazySizesConfig.rias.widths = this._options.srcsetWidths
 
-
         // plausibility checks
-        if (!this._options.user)
+        if (!this._options.user) {
             throw 'no user set'
+        }
 
         // _overrideSources
         switch (typeof this._options.overrideSourcesImages) {
@@ -158,7 +178,9 @@ class TinyPictures {
     }
 
     url(source = '', options = {}, baseUrl = this.baseUrl()) {
-        if (!source) return null
+        if (!source) {
+            return null
+        }
 
         let baseUrlObject = baseUrl ? urijs(baseUrl).normalize() : null
         if (source.indexOf('//') === 0 && baseUrlObject) {
@@ -227,15 +249,43 @@ class TinyPictures {
         return img
     }
 
-    unveil(img) {
+    unveil(img, convertToPictureElement = true) {
+        if (convertToPictureElement && img.getAttribute('data-tp-srcset')) {
+            // wrap
+            const document = this._options.window.document
+            const picture = document.createElement('picture')
+            img.parentNode.insertBefore(picture, img)
+            img.parentNode.removeChild(img)
+            picture.appendChild(img)
+            // add source elements
+            const ie9Start = document.createComment('[if IE 9]><video style="display: none";><![endif]')
+            const ie9End = document.createComment('[if IE 9]></video><![endif]')
+            picture.insertBefore(ie9Start, img)
+            const webpSource = document.createElement('source')
+            webpSource.setAttribute('type', 'image/webp')
+            const source = document.createElement('source')
+            const elements = [webpSource, source]
+            elements.forEach((element, index) => {
+                element.setAttribute('data-tp-src', img.getAttribute('data-tp-src'))
+                element.setAttribute('data-tp-srcset', img.getAttribute('data-tp-srcset'))
+                if (img.getAttribute('data-tp-sizes')) {
+                    element.setAttribute('data-tp-sizes', img.getAttribute('data-tp-sizes'))
+                }
+                const overrideOptions = index === 0 ? {format: 'webp'} : {}
+                element.setAttribute('data-tp-options', JSON.stringify(this._mergedOptions(img, overrideOptions)))
+                this._lazySizes.loader.unveil(element)
+                picture.insertBefore(element, img)
+            })
+            picture.insertBefore(ie9End, img)
+        }
         return this._lazySizes.loader.unveil(img)
     }
 
-    unveilAll() {
+    unveilAll(convertToPictureElement) {
         const document = this._options.window.document
         var list = document.getElementsByTagName('img')
         for (var i = 0; i < list.length; i++) {
-            this.unveil(list[i])
+            this.unveil(list[i], convertToPictureElement)
         }
     }
 
