@@ -29,6 +29,11 @@
             <script>
                 tinyPictures.unveil(document.getElementById('unveil'))
             </script>
+            <h2>Unveil manually with jQuery</h2>
+            <p><img id="unveil-jquery" class="img-fluid" data-tp-src="https://tiny.pictures/example1.jpg"></p>
+            <script>
+                tinyPictures.unveil($('#unveil-jquery').get(0))
+            </script>
             <h2>Simple src</h2>
             <p><img class="img-fluid tp-lazyload" data-tp-src="https://tiny.pictures/example1.jpg"></p>
             <h2>Simple src with options</h2>
