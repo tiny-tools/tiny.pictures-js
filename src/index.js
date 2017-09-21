@@ -150,6 +150,9 @@ class TinyPictures {
                 )
             })
             this._options.window.document.addEventListener('lazybeforeunveil', (event) => {
+                if (this._convertToPictureElement && event.target.getAttribute('data-tp-srcset') && event.target.classList.contains('tp-lazyload')) {
+                    this.wrapAndUnveilSources(event.target)
+                }
                 event.target.setAttribute(
                     'data-src',
                     this.url(
@@ -165,6 +168,12 @@ class TinyPictures {
                             this._mergedOptions(event.target)
                             )
                             .join(', ')
+                    )
+                }
+                if (event.target.getAttribute('data-tp-sizes') && event.target.getAttribute('data-tp-sizes') !== 'auto') {
+                    event.target.setAttribute(
+                        'sizes',
+                        event.target.getAttribute('data-tp-sizes')
                     )
                 }
             })
@@ -267,49 +276,65 @@ class TinyPictures {
         return img
     }
 
-    unveil(img, convertToPictureElement = true) {
-        if (convertToPictureElement && img.getAttribute('data-tp-srcset')) {
-            // wrap
-            const document = this._options.window.document
-            const picture = document.createElement('picture')
-            img.parentNode.insertBefore(picture, img)
-            img.parentNode.removeChild(img)
-            picture.appendChild(img)
-            // add source elements
-            const ie9Start = document.createComment('[if IE 9]><video style="display: none"><![endif]')
-            const ie9End = document.createComment('[if IE 9]></video><![endif]')
-            picture.insertBefore(ie9Start, img)
-            const webpSource = document.createElement('source')
-            webpSource.setAttribute('type', 'image/webp')
-            const source = document.createElement('source')
-            const dataAttributes = [
-                'tp-src',
-                'tp-srcset',
-                'tp-sizes',
-                'srcattr',
-                'widths',
-                'widthmap',
-                'modifyoptions',
-                'absurl',
-                'prefix',
-                'postfix'
-            ]
-            const elements = [webpSource, source]
-            elements.forEach((element, index) => {
-                dataAttributes.forEach((dataAttribute) => {
-                    const value = img.getAttribute('data-' + dataAttribute)
-                    if (value) {
-                        element.setAttribute('data-' + dataAttribute, value)
-                    }
-                })
-                const overrideOptions = index === 0 ? {format: 'webp'} : {}
-                element.setAttribute('data-tp-options', JSON.stringify(this._mergedOptions(img, overrideOptions)))
-                this._lazySizes.loader.unveil(element)
-                picture.insertBefore(element, img)
+    wrapInPicture(img) {
+        const document = this._options.window.document
+        const picture = document.createElement('picture')
+        img.parentNode.insertBefore(picture, img)
+        img.parentNode.removeChild(img)
+        picture.appendChild(img)
+        // add source elements
+        const ie9Start = document.createComment('[if IE 9]><video style="display: none"><![endif]')
+        const ie9End = document.createComment('[if IE 9]></video><![endif]')
+        picture.insertBefore(ie9Start, img)
+        const webpSource = document.createElement('source')
+        webpSource.setAttribute('type', 'image/webp')
+        const source = document.createElement('source')
+        const dataAttributes = [
+            'tp-src',
+            'tp-srcset',
+            'tp-sizes',
+            'srcattr',
+            'widths',
+            'widthmap',
+            'modifyoptions',
+            'absurl',
+            'prefix',
+            'postfix'
+        ]
+        const elements = [webpSource, source]
+        elements.forEach((element, index) => {
+            dataAttributes.forEach((dataAttribute) => {
+                const value = img.getAttribute('data-' + dataAttribute)
+                if (value) {
+                    element.setAttribute('data-' + dataAttribute, value)
+                }
             })
-            picture.insertBefore(ie9End, img)
+            const overrideOptions = index === 0 ? {format: 'webp'} : {}
+            element.setAttribute('data-tp-options', JSON.stringify(this._mergedOptions(img, overrideOptions)))
+            this._lazySizes.loader.unveil(element)
+            picture.insertBefore(element, img)
+        })
+        picture.insertBefore(ie9End, img)
+        return picture
+    }
+
+    wrapAndUnveilSources(img) {
+        const picture = this.wrapInPicture(img)
+        const sources = picture.getElementsByTagName('source')
+        for (var i = 0; i < sources.length; i++) {
+            this._lazySizes.loader.unveil(sources[i])
         }
-        return this._lazySizes.loader.unveil(img)
+    }
+
+    unveil(element, convertToPictureElement = true) {
+        if (element.classList.contains('tp-lazyloading') || element.classList.contains('tp-lazyloaded')) {
+            return
+        }
+
+        if (convertToPictureElement && element.getAttribute('data-tp-srcset')) {
+            this.wrapAndUnveilSources(element)
+        }
+        return this._lazySizes.loader.unveil(element)
     }
 
     unveilAll(convertToPictureElement) {
@@ -320,7 +345,8 @@ class TinyPictures {
         }
     }
 
-    lazyload() {
+    lazyload(convertToPictureElement = true) {
+        this._convertToPictureElement = convertToPictureElement
         this._lazySizes.init()
     }
 

@@ -126,9 +126,15 @@ var TinyPictures = function () {
                 event.detail.width = _this.url(event.target.getAttribute('data-tp-src'), _this._mergedOptions(event.target, { width: '{width}' }));
             });
             this._options.window.document.addEventListener('lazybeforeunveil', function (event) {
+                if (_this._convertToPictureElement && event.target.getAttribute('data-tp-srcset') && event.target.classList.contains('tp-lazyload')) {
+                    _this.wrapAndUnveilSources(event.target);
+                }
                 event.target.setAttribute('data-src', _this.url(event.target.getAttribute('data-tp-src'), _this._mergedOptions(event.target)));
                 if (event.target.getAttribute('data-tp-srcset') === '{width}') {
                     event.target.setAttribute('data-srcset', _this.srcsetArray(event.target.getAttribute('data-tp-src'), _this._mergedOptions(event.target)).join(', '));
+                }
+                if (event.target.getAttribute('data-tp-sizes') && event.target.getAttribute('data-tp-sizes') !== 'auto') {
+                    event.target.setAttribute('sizes', event.target.getAttribute('data-tp-sizes'));
                 }
             });
         }
@@ -239,43 +245,61 @@ var TinyPictures = function () {
             return img;
         }
     }, {
-        key: 'unveil',
-        value: function unveil(img) {
+        key: 'wrapInPicture',
+        value: function wrapInPicture(img) {
             var _this3 = this;
 
+            var document = this._options.window.document;
+            var picture = document.createElement('picture');
+            img.parentNode.insertBefore(picture, img);
+            img.parentNode.removeChild(img);
+            picture.appendChild(img);
+            // add source elements
+            var ie9Start = document.createComment('[if IE 9]><video style="display: none"><![endif]');
+            var ie9End = document.createComment('[if IE 9]></video><![endif]');
+            picture.insertBefore(ie9Start, img);
+            var webpSource = document.createElement('source');
+            webpSource.setAttribute('type', 'image/webp');
+            var source = document.createElement('source');
+            var dataAttributes = ['tp-src', 'tp-srcset', 'tp-sizes', 'srcattr', 'widths', 'widthmap', 'modifyoptions', 'absurl', 'prefix', 'postfix'];
+            var elements = [webpSource, source];
+            elements.forEach(function (element, index) {
+                dataAttributes.forEach(function (dataAttribute) {
+                    var value = img.getAttribute('data-' + dataAttribute);
+                    if (value) {
+                        element.setAttribute('data-' + dataAttribute, value);
+                    }
+                });
+                var overrideOptions = index === 0 ? { format: 'webp' } : {};
+                element.setAttribute('data-tp-options', JSON.stringify(_this3._mergedOptions(img, overrideOptions)));
+                _this3._lazySizes.loader.unveil(element);
+                picture.insertBefore(element, img);
+            });
+            picture.insertBefore(ie9End, img);
+            return picture;
+        }
+    }, {
+        key: 'wrapAndUnveilSources',
+        value: function wrapAndUnveilSources(img) {
+            var picture = this.wrapInPicture(img);
+            var sources = picture.getElementsByTagName('source');
+            for (var i = 0; i < sources.length; i++) {
+                this._lazySizes.loader.unveil(sources[i]);
+            }
+        }
+    }, {
+        key: 'unveil',
+        value: function unveil(element) {
             var convertToPictureElement = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
-            if (convertToPictureElement && img.getAttribute('data-tp-srcset')) {
-                // wrap
-                var document = this._options.window.document;
-                var picture = document.createElement('picture');
-                img.parentNode.insertBefore(picture, img);
-                img.parentNode.removeChild(img);
-                picture.appendChild(img);
-                // add source elements
-                var ie9Start = document.createComment('[if IE 9]><video style="display: none"><![endif]');
-                var ie9End = document.createComment('[if IE 9]></video><![endif]');
-                picture.insertBefore(ie9Start, img);
-                var webpSource = document.createElement('source');
-                webpSource.setAttribute('type', 'image/webp');
-                var source = document.createElement('source');
-                var dataAttributes = ['tp-src', 'tp-srcset', 'tp-sizes', 'srcattr', 'widths', 'widthmap', 'modifyoptions', 'absurl', 'prefix', 'postfix'];
-                var elements = [webpSource, source];
-                elements.forEach(function (element, index) {
-                    dataAttributes.forEach(function (dataAttribute) {
-                        var value = img.getAttribute('data-' + dataAttribute);
-                        if (value) {
-                            element.setAttribute('data-' + dataAttribute, value);
-                        }
-                    });
-                    var overrideOptions = index === 0 ? { format: 'webp' } : {};
-                    element.setAttribute('data-tp-options', JSON.stringify(_this3._mergedOptions(img, overrideOptions)));
-                    _this3._lazySizes.loader.unveil(element);
-                    picture.insertBefore(element, img);
-                });
-                picture.insertBefore(ie9End, img);
+            if (element.classList.contains('tp-lazyloading') || element.classList.contains('tp-lazyloaded')) {
+                return;
             }
-            return this._lazySizes.loader.unveil(img);
+
+            if (convertToPictureElement && element.getAttribute('data-tp-srcset')) {
+                this.wrapAndUnveilSources(element);
+            }
+            return this._lazySizes.loader.unveil(element);
         }
     }, {
         key: 'unveilAll',
@@ -289,6 +313,9 @@ var TinyPictures = function () {
     }, {
         key: 'lazyload',
         value: function lazyload() {
+            var convertToPictureElement = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+            this._convertToPictureElement = convertToPictureElement;
             this._lazySizes.init();
         }
     }, {
