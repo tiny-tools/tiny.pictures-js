@@ -7,7 +7,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var urijs = require('urijs');
-var defaultsDeep = require('lodash/defaultsDeep');
+var defaults = require('lodash/defaults');
 var forEach = require('lodash/forEach');
 var find = require('lodash/find');
 var startsWith = require('lodash/startsWith');
@@ -21,7 +21,7 @@ var TinyPictures = function () {
 
         _classCallCheck(this, TinyPictures);
 
-        this._options = defaultsDeep({}, options, {
+        this._options = defaults({}, options, {
             window: null,
             user: null,
             namedSources: [],
@@ -30,20 +30,22 @@ var TinyPictures = function () {
             customSubdomain: true,
             protocol: 'https',
             defaultBaseUrl: '',
-            srcsetWidths: [50, 75, 100, 120, 180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 1944, 2160, 2376, 2592, 2808, 3024],
-            lazySizesConfig: {
-                lazyClass: 'tp-lazyload',
-                preloadClass: 'tp-lazypreload',
-                loadingClass: 'tp-lazyloading',
-                loadedClass: 'tp-lazyloaded',
-                sizesAttr: 'data-tp-sizes',
-                loadMode: 3,
-                init: false,
-                rias: {
-                    srcAttr: 'data-tp-srcset'
-                }
-            }
+            srcsetWidths: [50, 75, 100, 120, 180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 1944, 2160, 2376, 2592, 2808, 3024]
         });
+        this._options.lazySizesConfig = defaults({}, options && options.lazySizesConfig ? options.lazySizesConfig : {}, {
+            lazyClass: 'tp-lazyload',
+            preloadClass: 'tp-lazypreload',
+            loadingClass: 'tp-lazyloading',
+            loadedClass: 'tp-lazyloaded',
+            sizesAttr: 'data-tp-sizes',
+            loadMode: 3,
+            init: false
+        });
+        this._options.lazySizesConfig.rias = defaults({}, options && options.lazySizesConfig && options.lazySizesConfig.rias ? options.lazySizesConfig.rias : {}, {
+            srcAttr: 'data-tp-srcset',
+            widths: this._options.srcsetWidths
+        });
+
         this._options.lazySizesConfig.rias.widths = this._options.srcsetWidths;
 
         // plausibility checks
@@ -253,19 +255,21 @@ var TinyPictures = function () {
                 img.parentNode.removeChild(img);
                 picture.appendChild(img);
                 // add source elements
-                var ie9Start = document.createComment('[if IE 9]><video style="display: none";><![endif]');
+                var ie9Start = document.createComment('[if IE 9]><video style="display: none"><![endif]');
                 var ie9End = document.createComment('[if IE 9]></video><![endif]');
                 picture.insertBefore(ie9Start, img);
                 var webpSource = document.createElement('source');
                 webpSource.setAttribute('type', 'image/webp');
                 var source = document.createElement('source');
+                var dataAttributes = ['tp-src', 'tp-srcset', 'tp-sizes', 'srcattr', 'widths', 'widthmap', 'modifyoptions', 'absurl', 'prefix', 'postfix'];
                 var elements = [webpSource, source];
                 elements.forEach(function (element, index) {
-                    element.setAttribute('data-tp-src', img.getAttribute('data-tp-src'));
-                    element.setAttribute('data-tp-srcset', img.getAttribute('data-tp-srcset'));
-                    if (img.getAttribute('data-tp-sizes')) {
-                        element.setAttribute('data-tp-sizes', img.getAttribute('data-tp-sizes'));
-                    }
+                    dataAttributes.forEach(function (dataAttribute) {
+                        var value = img.getAttribute('data-' + dataAttribute);
+                        if (value) {
+                            element.setAttribute('data-' + dataAttribute, value);
+                        }
+                    });
                     var overrideOptions = index === 0 ? { format: 'webp' } : {};
                     element.setAttribute('data-tp-options', JSON.stringify(_this3._mergedOptions(img, overrideOptions)));
                     _this3._lazySizes.loader.unveil(element);
