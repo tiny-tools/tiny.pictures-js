@@ -1,5 +1,5 @@
 const urijs = require('urijs')
-const defaultsDeep = require('lodash/defaultsDeep')
+const defaults = require('lodash/defaults')
 const forEach = require('lodash/forEach')
 const find = require('lodash/find')
 const startsWith = require('lodash/startsWith')
@@ -9,7 +9,7 @@ const isPrivate = require('sync-is-private-host').isPrivate
 
 class TinyPictures {
     constructor(options) {
-        this._options = defaultsDeep(
+        this._options = defaults(
             {},
             options,
             {
@@ -41,21 +41,31 @@ class TinyPictures {
                     2592,
                     2808,
                     3024
-                ],
-                lazySizesConfig: {
-                    lazyClass: 'tp-lazyload',
-                    preloadClass: 'tp-lazypreload',
-                    loadingClass: 'tp-lazyloading',
-                    loadedClass: 'tp-lazyloaded',
-                    sizesAttr: 'data-tp-sizes',
-                    loadMode: 3,
-                    init: false,
-                    rias: {
-                        srcAttr: 'data-tp-srcset',
-                    }
-                }
+                ]
             }
         )
+        this._options.lazySizesConfig = defaults(
+            {},
+            options && options.lazySizesConfig ? options.lazySizesConfig : {},
+            {
+                lazyClass: 'tp-lazyload',
+                preloadClass: 'tp-lazypreload',
+                loadingClass: 'tp-lazyloading',
+                loadedClass: 'tp-lazyloaded',
+                sizesAttr: 'data-tp-sizes',
+                loadMode: 3,
+                init: false
+            }
+        )
+        this._options.lazySizesConfig.rias = defaults(
+            {},
+            options && options.lazySizesConfig && options.lazySizesConfig.rias ? options.lazySizesConfig.rias : {},
+            {
+                srcAttr: 'data-tp-srcset',
+                widths: this._options.srcsetWidths
+            }
+        )
+
         this._options.lazySizesConfig.rias.widths = this._options.srcsetWidths
 
         // plausibility checks
@@ -88,9 +98,10 @@ class TinyPictures {
                     case 'sports':
                     case 'technics':
                     case 'transport':
-                        this._overrideSourcesImages = range(1, 11).map((number) => {
-                            return 'http://lorempixel.com/1920/1920/' + this._options.overrideSourcesImages + '/' + number
-                        })
+                        this._overrideSourcesImages = range(1, 11)
+                            .map((number) => {
+                                return 'http://lorempixel.com/1920/1920/' + this._options.overrideSourcesImages + '/' + number
+                            })
                         break
                     default:
                         this._overrideSourcesImages = [this._options.overrideSourcesImages]
@@ -154,7 +165,8 @@ class TinyPictures {
                         this.srcsetArray(
                             event.target.getAttribute('data-tp-src'),
                             this._mergedOptions(event.target)
-                        ).join(', ')
+                            )
+                            .join(', ')
                     )
                 }
             })
@@ -182,11 +194,13 @@ class TinyPictures {
             return null
         }
 
-        let baseUrlObject = baseUrl ? urijs(baseUrl).normalize() : null
+        let baseUrlObject = baseUrl ? urijs(baseUrl)
+            .normalize() : null
         if (source.indexOf('//') === 0 && baseUrlObject) {
             source = baseUrlObject.protocol() + ':' + source
         }
-        let sourceObject = urijs(source).normalize()
+        let sourceObject = urijs(source)
+            .normalize()
         if ((!sourceObject.protocol() || !sourceObject.hostname()) && baseUrl) {
             sourceObject = sourceObject.absoluteTo(baseUrl)
         }
@@ -206,11 +220,16 @@ class TinyPictures {
         })
         let urlObjectParams = Object.assign({}, this._apiBaseUrlObject)
         if (namedSource) {
-            urlObjectParams.path = urijs.joinPaths(urlObjectParams.path, namedSource.name, sourceUrl.replace(namedSource.url, ''))
+            urlObjectParams.path = urijs.joinPaths(
+                urlObjectParams.path,
+                namedSource.name,
+                sourceUrl.replace(namedSource.url, '')
+            )
         }
 
         // build urlObject
-        let urlObject = urijs(urlObjectParams).normalize()
+        let urlObject = urijs(urlObjectParams)
+            .normalize()
         forEach(options, (val, key) => {
             urlObject.addQuery(key, val)
         })
@@ -218,7 +237,8 @@ class TinyPictures {
             urlObject.addQuery('source', sourceUrl)
         }
 
-        return urlObject.toString().replace(/%7Bwidth%7D/gi, '{width}')
+        return urlObject.toString()
+            .replace(/%7Bwidth%7D/gi, '{width}')
     }
 
     srcsetArray(originalSrc, options) {
@@ -258,19 +278,32 @@ class TinyPictures {
             img.parentNode.removeChild(img)
             picture.appendChild(img)
             // add source elements
-            const ie9Start = document.createComment('[if IE 9]><video style="display: none";><![endif]')
+            const ie9Start = document.createComment('[if IE 9]><video style="display: none"><![endif]')
             const ie9End = document.createComment('[if IE 9]></video><![endif]')
             picture.insertBefore(ie9Start, img)
             const webpSource = document.createElement('source')
             webpSource.setAttribute('type', 'image/webp')
             const source = document.createElement('source')
+            const dataAttributes = [
+                'tp-src',
+                'tp-srcset',
+                'tp-sizes',
+                'srcattr',
+                'widths',
+                'widthmap',
+                'modifyoptions',
+                'absurl',
+                'prefix',
+                'postfix'
+            ]
             const elements = [webpSource, source]
             elements.forEach((element, index) => {
-                element.setAttribute('data-tp-src', img.getAttribute('data-tp-src'))
-                element.setAttribute('data-tp-srcset', img.getAttribute('data-tp-srcset'))
-                if (img.getAttribute('data-tp-sizes')) {
-                    element.setAttribute('data-tp-sizes', img.getAttribute('data-tp-sizes'))
-                }
+                dataAttributes.forEach((dataAttribute) => {
+                    const value = img.getAttribute('data-' + dataAttribute)
+                    if (value) {
+                        element.setAttribute('data-' + dataAttribute, value)
+                    }
+                })
                 const overrideOptions = index === 0 ? {format: 'webp'} : {}
                 element.setAttribute('data-tp-options', JSON.stringify(this._mergedOptions(img, overrideOptions)))
                 this._lazySizes.loader.unveil(element)
@@ -294,15 +327,17 @@ class TinyPictures {
     }
 
     registerAngularJsModule(angular) {
-        angular.module('tiny.pictures', []).filter('tinyPicturesUrl', () => this.url.bind(this))
+        angular.module('tiny.pictures', [])
+            .filter('tinyPicturesUrl', () => this.url.bind(this))
     }
 
     registerJQueryPlugin(jQuery) {
         const self = this
         jQuery.fn.tinyPictures = function () {
-            this.filter('img').each(function () {
-                return self.unveil(this)
-            })
+            this.filter('img')
+                .each(function () {
+                    return self.unveil(this)
+                })
             return this
         }
     }
