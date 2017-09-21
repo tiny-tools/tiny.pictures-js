@@ -38,12 +38,9 @@ var TinyPictures = function () {
             loadingClass: 'tp-lazyloading',
             loadedClass: 'tp-lazyloaded',
             sizesAttr: 'data-tp-sizes',
+            autosizesClass: 'tp-lazyautosizes',
             loadMode: 3,
             init: false
-        });
-        this._options.lazySizesConfig.rias = defaults({}, options && options.lazySizesConfig && options.lazySizesConfig.rias ? options.lazySizesConfig.rias : {}, {
-            srcAttr: 'data-tp-srcset',
-            widths: this._options.srcsetWidths
         });
 
         // plausibility checks
@@ -117,37 +114,31 @@ var TinyPictures = function () {
             var lazySizesBackup = window.lazySizes;
             var lazySizesConfigBackup = window.lazySizesConfig;
             window.lazySizesConfig = this._options.lazySizesConfig;
-            this._lazySizesRias = require('lazysizes/plugins/rias/ls.rias.js');
             this._lazySizes = require('lazysizes');
             window.lazySizes = lazySizesBackup;
             window.lazySizesConfig = lazySizesConfigBackup;
 
-            this._options.window.document.addEventListener('lazyriasmodifyoptions', function (event) {
-                event.detail.width = _this.url(event.target.getAttribute('data-tp-src'), _this._mergedOptions(event.target, { width: '{width}' }));
-            });
             this._options.window.document.addEventListener('lazybeforeunveil', function (event) {
-                if (_this._convertToPictureElement && event.target.getAttribute('data-tp-srcset') && event.target.classList.contains('tp-lazyload')) {
-                    _this.wrapAndUnveilSources(event.target);
+                var img = event.target;
+                var noPicture = img.classList.contains('tp-nopicture');
+
+                var elementsToReveal = [img];
+                var picture = noPicture ? null : _this.wrapInPicture(event.target);
+                if (picture) {
+                    var sources = picture.getElementsByTagName('source');
+                    for (var i = 0; i < sources.length; i++) {
+                        elementsToReveal.push(sources[i]);
+                    }
                 }
-                event.target.setAttribute('data-src', _this.url(event.target.getAttribute('data-tp-src'), _this._mergedOptions(event.target)));
-                if (event.target.getAttribute('data-tp-srcset') === '{width}') {
-                    event.target.setAttribute('data-srcset', _this.srcsetArray(event.target.getAttribute('data-tp-src'), _this._mergedOptions(event.target)).join(', '));
-                }
-                if (event.target.getAttribute('data-tp-sizes') && event.target.getAttribute('data-tp-sizes') !== 'auto') {
-                    event.target.setAttribute('sizes', event.target.getAttribute('data-tp-sizes'));
-                }
+
+                elementsToReveal.forEach(function (elementToReveal) {
+                    return _this.revealAttributes(elementToReveal);
+                });
             });
         }
     }
 
     _createClass(TinyPictures, [{
-        key: '_mergedOptions',
-        value: function _mergedOptions(img, overrideOptions) {
-            var optionsString = img.getAttribute('data-tp-options');
-            var options = optionsString ? JSON.parse(optionsString) : {};
-            return Object.assign({}, options, overrideOptions);
-        }
-    }, {
         key: 'baseUrl',
         value: function baseUrl() {
             if (this._options.defaultBaseUrl) {
@@ -261,61 +252,63 @@ var TinyPictures = function () {
             var webpSource = document.createElement('source');
             webpSource.setAttribute('type', 'image/webp');
             var source = document.createElement('source');
-            var dataAttributes = ['tp-src', 'tp-srcset', 'tp-sizes', 'srcattr', 'widths', 'widthmap', 'modifyoptions', 'absurl', 'prefix', 'postfix'];
+            var attributes = ['data-tp-src', 'data-tp-srcset', 'data-tp-sizes'];
             var elements = [webpSource, source];
             elements.forEach(function (element, index) {
-                dataAttributes.forEach(function (dataAttribute) {
-                    var value = img.getAttribute('data-' + dataAttribute);
+                attributes.forEach(function (attribute) {
+                    var value = img.getAttribute(attribute);
                     if (value) {
-                        element.setAttribute('data-' + dataAttribute, value);
+                        element.setAttribute(attribute, value);
                     }
                 });
                 var overrideOptions = index === 0 ? { format: 'webp' } : {};
-                element.setAttribute('data-tp-options', JSON.stringify(_this3._mergedOptions(img, overrideOptions)));
-                _this3._lazySizes.loader.unveil(element);
+                element.setAttribute('data-tp-options', JSON.stringify(_this3.mergedOptions(img, overrideOptions)));
                 picture.insertBefore(element, img);
             });
             picture.insertBefore(ie9End, img);
             return picture;
         }
     }, {
-        key: 'wrapAndUnveilSources',
-        value: function wrapAndUnveilSources(img) {
-            var picture = this.wrapInPicture(img);
-            var sources = picture.getElementsByTagName('source');
-            for (var i = 0; i < sources.length; i++) {
-                this._lazySizes.loader.unveil(sources[i]);
+        key: 'mergedOptions',
+        value: function mergedOptions(img, overrideOptions) {
+            var optionsString = img.getAttribute('data-tp-options');
+            var options = optionsString ? JSON.parse(optionsString) : {};
+            return Object.assign({}, options, overrideOptions);
+        }
+    }, {
+        key: 'revealAttributes',
+        value: function revealAttributes(element) {
+            // element can be either source or img
+            var isSource = element.nodeName.toLowerCase() === 'source';
+
+            element.setAttribute(isSource ? 'srcset' : 'src', this.url(element.getAttribute('data-tp-src'), this.mergedOptions(element)));
+
+            if (element.getAttribute('data-tp-sizes')) {
+                element.setAttribute('srcset', this.srcsetArray(element.getAttribute('data-tp-src'), this.mergedOptions(element))
+                    .join(', '));
             }
         }
     }, {
-        key: 'unveil',
-        value: function unveil(element) {
-            var convertToPictureElement = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-
+        key: 'reveal',
+        value: function reveal(element) {
             if (element.classList.contains('tp-lazyloading') || element.classList.contains('tp-lazyloaded')) {
                 return;
             }
 
-            if (convertToPictureElement && element.getAttribute('data-tp-srcset')) {
-                this.wrapAndUnveilSources(element);
-            }
             return this._lazySizes.loader.unveil(element);
         }
     }, {
-        key: 'unveilAll',
-        value: function unveilAll(convertToPictureElement) {
+        key: 'reveilAll',
+        value: function reveilAll() {
             var document = this._options.window.document;
             var list = document.getElementsByTagName('img');
             for (var i = 0; i < list.length; i++) {
-                this.unveil(list[i], convertToPictureElement);
+                this.reveal(list[i]);
             }
         }
     }, {
         key: 'lazyload',
         value: function lazyload() {
-            var convertToPictureElement = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-
-            this._convertToPictureElement = convertToPictureElement;
             this._lazySizes.init();
         }
     }, {

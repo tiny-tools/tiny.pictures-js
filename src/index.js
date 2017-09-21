@@ -53,16 +53,9 @@ class TinyPictures {
                 loadingClass: 'tp-lazyloading',
                 loadedClass: 'tp-lazyloaded',
                 sizesAttr: 'data-tp-sizes',
+                autosizesClass: 'tp-lazyautosizes',
                 loadMode: 3,
                 init: false
-            }
-        )
-        this._options.lazySizesConfig.rias = defaults(
-            {},
-            options && options.lazySizesConfig && options.lazySizesConfig.rias ? options.lazySizesConfig.rias : {},
-            {
-                srcAttr: 'data-tp-srcset',
-                widths: this._options.srcsetWidths
             }
         )
 
@@ -138,52 +131,26 @@ class TinyPictures {
             const lazySizesBackup = window.lazySizes
             const lazySizesConfigBackup = window.lazySizesConfig
             window.lazySizesConfig = this._options.lazySizesConfig
-            this._lazySizesRias = require('lazysizes/plugins/rias/ls.rias.js')
             this._lazySizes = require('lazysizes')
             window.lazySizes = lazySizesBackup
             window.lazySizesConfig = lazySizesConfigBackup
 
-            this._options.window.document.addEventListener('lazyriasmodifyoptions', (event) => {
-                event.detail.width = this.url(
-                    event.target.getAttribute('data-tp-src'),
-                    this._mergedOptions(event.target, {width: '{width}'})
-                )
-            })
             this._options.window.document.addEventListener('lazybeforeunveil', (event) => {
-                if (this._convertToPictureElement && event.target.getAttribute('data-tp-srcset') && event.target.classList.contains('tp-lazyload')) {
-                    this.wrapAndUnveilSources(event.target)
+                const img = event.target
+                const noPicture = img.classList.contains('tp-nopicture')
+
+                const elementsToReveal = [img]
+                const picture = noPicture ? null : this.wrapInPicture(event.target)
+                if (picture) {
+                    const sources = picture.getElementsByTagName('source')
+                    for (let i = 0; i < sources.length; i++) {
+                        elementsToReveal.push(sources[i])
+                    }
                 }
-                event.target.setAttribute(
-                    'data-src',
-                    this.url(
-                        event.target.getAttribute('data-tp-src'),
-                        this._mergedOptions(event.target)
-                    )
-                )
-                if (event.target.getAttribute('data-tp-srcset') === '{width}') {
-                    event.target.setAttribute(
-                        'data-srcset',
-                        this.srcsetArray(
-                            event.target.getAttribute('data-tp-src'),
-                            this._mergedOptions(event.target)
-                            )
-                            .join(', ')
-                    )
-                }
-                if (event.target.getAttribute('data-tp-sizes') && event.target.getAttribute('data-tp-sizes') !== 'auto') {
-                    event.target.setAttribute(
-                        'sizes',
-                        event.target.getAttribute('data-tp-sizes')
-                    )
-                }
+
+                elementsToReveal.forEach((elementToReveal) => this.revealAttributes(elementToReveal))
             })
         }
-    }
-
-    _mergedOptions(img, overrideOptions) {
-        const optionsString = img.getAttribute('data-tp-options')
-        const options = optionsString ? JSON.parse(optionsString) : {}
-        return Object.assign({}, options, overrideOptions)
     }
 
     baseUrl() {
@@ -289,64 +256,74 @@ class TinyPictures {
         const webpSource = document.createElement('source')
         webpSource.setAttribute('type', 'image/webp')
         const source = document.createElement('source')
-        const dataAttributes = [
-            'tp-src',
-            'tp-srcset',
-            'tp-sizes',
-            'srcattr',
-            'widths',
-            'widthmap',
-            'modifyoptions',
-            'absurl',
-            'prefix',
-            'postfix'
+        const attributes = [
+            'data-tp-src',
+            'data-tp-srcset',
+            'data-tp-sizes'
         ]
         const elements = [webpSource, source]
         elements.forEach((element, index) => {
-            dataAttributes.forEach((dataAttribute) => {
-                const value = img.getAttribute('data-' + dataAttribute)
+            attributes.forEach((attribute) => {
+                const value = img.getAttribute(attribute)
                 if (value) {
-                    element.setAttribute('data-' + dataAttribute, value)
+                    element.setAttribute(attribute, value)
                 }
             })
             const overrideOptions = index === 0 ? {format: 'webp'} : {}
-            element.setAttribute('data-tp-options', JSON.stringify(this._mergedOptions(img, overrideOptions)))
-            this._lazySizes.loader.unveil(element)
+            element.setAttribute('data-tp-options', JSON.stringify(this.mergedOptions(img, overrideOptions)))
             picture.insertBefore(element, img)
         })
         picture.insertBefore(ie9End, img)
         return picture
     }
 
-    wrapAndUnveilSources(img) {
-        const picture = this.wrapInPicture(img)
-        const sources = picture.getElementsByTagName('source')
-        for (var i = 0; i < sources.length; i++) {
-            this._lazySizes.loader.unveil(sources[i])
+    mergedOptions(img, overrideOptions) {
+        const optionsString = img.getAttribute('data-tp-options')
+        const options = optionsString ? JSON.parse(optionsString) : {}
+        return Object.assign({}, options, overrideOptions)
+    }
+
+    revealAttributes(element) {
+        // element can be either source or img
+        const isSource = element.nodeName.toLowerCase() === 'source'
+
+        element.setAttribute(
+            isSource ? 'srcset' : 'src',
+            this.url(
+                element.getAttribute('data-tp-src'),
+                this.mergedOptions(element)
+            )
+        )
+
+        if (element.getAttribute('data-tp-sizes')) {
+            element.setAttribute(
+                'srcset',
+                this.srcsetArray(
+                    element.getAttribute('data-tp-src'),
+                    this.mergedOptions(element)
+                    )
+                    .join(', ')
+            )
         }
     }
 
-    unveil(element, convertToPictureElement = true) {
+    reveal(element) {
         if (element.classList.contains('tp-lazyloading') || element.classList.contains('tp-lazyloaded')) {
             return
         }
 
-        if (convertToPictureElement && element.getAttribute('data-tp-srcset')) {
-            this.wrapAndUnveilSources(element)
-        }
         return this._lazySizes.loader.unveil(element)
     }
 
-    unveilAll(convertToPictureElement) {
+    reveilAll() {
         const document = this._options.window.document
         var list = document.getElementsByTagName('img')
         for (var i = 0; i < list.length; i++) {
-            this.unveil(list[i], convertToPictureElement)
+            this.reveal(list[i])
         }
     }
 
-    lazyload(convertToPictureElement = true) {
-        this._convertToPictureElement = convertToPictureElement
+    lazyload() {
         this._lazySizes.init()
     }
 

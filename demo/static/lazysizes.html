@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/3.0.0/plugins/rias/ls.rias.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/3.0.0/lazysizes.min.js"></script>
+</head>
+<body>
+<h1>Lazyload</h1>
+
+<h2>Simple src</h2>
+
+<p><img class="lazyload" data-src="https://tiny.pictures/example1.jpg"></p>
+
+<h2>Simple srcset and sizes without rias</h2>
+
+<p><img class="lazyload" data-src="https://tiny.pictures/example1.jpg"
+        data-srcset="https://demo.tiny.pictures/main/example1.jpg?width=100 100w, https://demo.tiny.pictures/main/example1.jpg?width=200 200w"
+        data-sizes="auto"></p>
+
+<h2>Simple srcset and sizes with rias</h2>
+
+<p><img class="lazyload" data-src="https://demo.tiny.pictures/main/example1.jpg?width={width}" data-sizes="auto"></p>
+
+<h2>Simple picture</h2>
+
+<p>
+    <picture>
+        <!--[if IE 9]>
+        <video style="display: none;><![endif]-->
+        <source type="image/webp"
+                data-srcset="https://demo.tiny.pictures/main/example1.jpg?width=100&format=webp 100w, https://demo.tiny.pictures/main/example1.jpg?width=200&format=webp 200w">
+        <source
+            data-srcset="https://demo.tiny.pictures/main/example1.jpg?width=100 100w, https://demo.tiny.pictures/main/example1.jpg?width=200 200w">
+        <img class="lazyload" data-src="https://tiny.pictures/example1.jpg?width={width}">
+        <!--[if IE 9]></video><![endif]-->
+    </picture>
+</p>
+</body>
+</html>

@@ -3,11 +3,6 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.7.1/slick.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.7.1/slick-theme.min.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.7.1/slick.min.js"></script>
         <script src="/tiny.pictures.min.js"></script>
         <script>
             var tinyPictures = new TinyPictures({
@@ -15,19 +10,17 @@
                 user: 'demo',
                 namedSources: [
                     {name: 'main', url: 'https://tiny.pictures/'}
-                ],
-                srcsetWidths: [50, 100, 200, 400, 600, 800, 1000]
+                ]
             })
         </script>
     </head>
     <body>
-        <div class="container">
-            <h1>Lazyload</h1>
-            <h2>Simple srcset and sizes with options</h2>
-            <p><img class="img-fluid tp-lazyload" data-tp-src="https://tiny.pictures/example1.jpg" data-tp-options='{"quality": 10}' data-tp-srcset="{width}" data-tp-sizes="auto"></p>
-            <script>
-                tinyPictures.lazyload()
-            </script>
-        </div>
+    <h1>Lazyload</h1>
+
+    <p><img id="reveal" class="tp-lazyload" data-tp-src="https://tiny.pictures/example1.jpg" data-tp-sizes="auto"
+            data-tp-options='{"quality": 10}'></p>
+    <script>
+        tinyPictures.lazyload()
+    </script>
     </body>
 </html>
