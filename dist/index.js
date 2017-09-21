@@ -284,8 +284,7 @@ var TinyPictures = function () {
             element.setAttribute(isSource ? 'srcset' : 'src', this.url(element.getAttribute('data-tp-src'), this.mergedOptions(element)));
 
             if (element.getAttribute('data-tp-sizes')) {
-                element.setAttribute('srcset', this.srcsetArray(element.getAttribute('data-tp-src'), this.mergedOptions(element))
-                    .join(', '));
+                element.setAttribute('srcset', this.srcsetArray(element.getAttribute('data-tp-src'), this.mergedOptions(element)).join(', '));
             }
         }
     }, {
