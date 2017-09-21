@@ -46,8 +46,6 @@ var TinyPictures = function () {
             widths: this._options.srcsetWidths
         });
 
-        this._options.lazySizesConfig.rias.widths = this._options.srcsetWidths;
-
         // plausibility checks
         if (!this._options.user) {
             throw 'no user set';
