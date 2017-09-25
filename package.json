@@ -1,6 +1,6 @@
 {
   "name": "tiny.pictures-js",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "JavaScript library for tiny.pictures",
   "main": "dist/index.js",
   "scripts": {
