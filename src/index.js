@@ -244,6 +244,18 @@ class TinyPictures {
     }
 
     wrapInPicture(img) {
+        if (img.parentElement.nodeName.toLowerCase() === 'picture') {
+            return img.parentElement
+        }
+
+        const eventName = 'tpbeforewrapinpicture'
+        const event = new Event(eventName)
+        event.initEvent(eventName, true, true)
+        img.dispatchEvent(event)
+        if (event.defaultPrevented) {
+            return null
+        }
+
         const document = this._options.window.document
         const picture = document.createElement('picture')
         img.parentNode.insertBefore(picture, img)

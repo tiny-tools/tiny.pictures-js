@@ -240,6 +240,18 @@ var TinyPictures = function () {
         value: function wrapInPicture(img) {
             var _this3 = this;
 
+            if (img.parentElement.nodeName.toLowerCase() === 'picture') {
+                return img.parentElement;
+            }
+
+            var eventName = 'tpbeforewrapinpicture';
+            var event = new Event(eventName);
+            event.initEvent(eventName, true, true);
+            img.dispatchEvent(event);
+            if (event.defaultPrevented) {
+                return null;
+            }
+
             var document = this._options.window.document;
             var picture = document.createElement('picture');
             img.parentNode.insertBefore(picture, img);
