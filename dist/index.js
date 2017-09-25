@@ -127,7 +127,7 @@ var TinyPictures = function () {
                 if (picture) {
                     var sources = picture.getElementsByTagName('source');
                     for (var i = 0; i < sources.length; i++) {
-                        elementsToReveal.push(sources[i]);
+                        elementsToReveal.unshift(sources[i]);
                     }
                 }
 
@@ -283,8 +283,15 @@ var TinyPictures = function () {
 
             element.setAttribute(isSource ? 'srcset' : 'src', this.url(element.getAttribute('data-tp-src'), this.mergedOptions(element)));
 
-            if (element.getAttribute('data-tp-sizes')) {
+            var sizes = element.getAttribute('data-tp-sizes');
+            if (sizes) {
                 element.setAttribute('srcset', this.srcsetArray(element.getAttribute('data-tp-src'), this.mergedOptions(element)).join(', '));
+
+                if (sizes === 'auto') {
+                    this._lazySizes.autoSizer.updateElem(element);
+                } else {
+                    element.setAttribute('sizes', sizes);
+                }
             }
         }
     }, {

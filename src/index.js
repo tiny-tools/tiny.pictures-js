@@ -144,7 +144,7 @@ class TinyPictures {
                 if (picture) {
                     const sources = picture.getElementsByTagName('source')
                     for (let i = 0; i < sources.length; i++) {
-                        elementsToReveal.push(sources[i])
+                        elementsToReveal.unshift(sources[i])
                     }
                 }
 
@@ -295,7 +295,8 @@ class TinyPictures {
             )
         )
 
-        if (element.getAttribute('data-tp-sizes')) {
+        const sizes = element.getAttribute('data-tp-sizes')
+        if (sizes) {
             element.setAttribute(
                 'srcset',
                 this.srcsetArray(
@@ -304,6 +305,12 @@ class TinyPictures {
                     )
                     .join(', ')
             )
+
+            if (sizes === 'auto') {
+                this._lazySizes.autoSizer.updateElem(element)
+            } else {
+                element.setAttribute('sizes', sizes)
+            }
         }
     }
 
