@@ -297,8 +297,8 @@ var TinyPictures = function () {
             return this._lazySizes.loader.unveil(element);
         }
     }, {
-        key: 'reveilAll',
-        value: function reveilAll() {
+        key: 'revealAll',
+        value: function revealAll() {
             var document = this._options.window.document;
             var list = document.getElementsByTagName('img');
             for (var i = 0; i < list.length; i++) {

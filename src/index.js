@@ -315,7 +315,7 @@ class TinyPictures {
         return this._lazySizes.loader.unveil(element)
     }
 
-    reveilAll() {
+    revealAll() {
         const document = this._options.window.document
         var list = document.getElementsByTagName('img')
         for (var i = 0; i < list.length; i++) {
