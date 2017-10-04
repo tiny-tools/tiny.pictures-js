@@ -13,6 +13,7 @@ var find = require('lodash/find');
 var startsWith = require('lodash/startsWith');
 var sample = require('lodash/sample');
 var range = require('lodash/range');
+var assign = require('lodash/assign');
 var isPrivate = require('sync-is-private-host').isPrivate;
 
 var TinyPictures = function () {
@@ -182,7 +183,7 @@ var TinyPictures = function () {
             var namedSource = find(this._options.namedSources, function (namedSource) {
                 return startsWith(sourceUrl, namedSource.url);
             });
-            var urlObjectParams = Object.assign({}, this._apiBaseUrlObject);
+            var urlObjectParams = assign({}, this._apiBaseUrlObject);
             if (namedSource) {
                 urlObjectParams.path = urijs.joinPaths(urlObjectParams.path, namedSource.name, sourceUrl.replace(namedSource.url, ''));
             }
@@ -205,7 +206,7 @@ var TinyPictures = function () {
 
             var srcsetArray = [];
             forEach(this._options.srcsetWidths, function (width) {
-                srcsetArray.push(_this2.url(originalSrc, Object.assign({}, options, { width: width })) + ' ' + width + 'w');
+                srcsetArray.push(_this2.url(originalSrc, assign({}, options, { width: width })) + ' ' + width + 'w');
             });
             return srcsetArray;
         }
@@ -244,15 +245,16 @@ var TinyPictures = function () {
                 return img.parentElement;
             }
 
+            var document = this._options.window.document;
+
             var eventName = 'tpbeforewrapinpicture';
-            var event = new Event(eventName);
+            var event = typeof Event === 'function' ? new Event(eventName) : document.createEvent('Event');
             event.initEvent(eventName, true, true);
             img.dispatchEvent(event);
             if (event.defaultPrevented) {
                 return null;
             }
 
-            var document = this._options.window.document;
             var picture = document.createElement('picture');
             img.parentNode.insertBefore(picture, img);
             img.parentNode.removeChild(img);
@@ -285,7 +287,7 @@ var TinyPictures = function () {
         value: function mergedOptions(img, overrideOptions) {
             var optionsString = img.getAttribute('data-tp-options');
             var options = optionsString ? JSON.parse(optionsString) : {};
-            return Object.assign({}, options, overrideOptions);
+            return assign({}, options, overrideOptions);
         }
     }, {
         key: 'revealAttributes',

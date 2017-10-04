@@ -5,6 +5,7 @@ const find = require('lodash/find')
 const startsWith = require('lodash/startsWith')
 const sample = require('lodash/sample')
 const range = require('lodash/range')
+const assign = require('lodash/assign')
 const isPrivate = require('sync-is-private-host').isPrivate
 
 class TinyPictures {
@@ -192,7 +193,7 @@ class TinyPictures {
         const namedSource = find(this._options.namedSources, (namedSource) => {
             return startsWith(sourceUrl, namedSource.url)
         })
-        let urlObjectParams = Object.assign({}, this._apiBaseUrlObject)
+        let urlObjectParams = assign({}, this._apiBaseUrlObject)
         if (namedSource) {
             urlObjectParams.path = urijs.joinPaths(
                 urlObjectParams.path,
@@ -218,7 +219,7 @@ class TinyPictures {
     srcsetArray(originalSrc, options) {
         let srcsetArray = []
         forEach(this._options.srcsetWidths, (width) => {
-            srcsetArray.push(this.url(originalSrc, Object.assign({}, options, {width: width})) + ' ' + width + 'w')
+            srcsetArray.push(this.url(originalSrc, assign({}, options, {width: width})) + ' ' + width + 'w')
         })
         return srcsetArray
     }
@@ -248,15 +249,16 @@ class TinyPictures {
             return img.parentElement
         }
 
+        const document = this._options.window.document
+
         const eventName = 'tpbeforewrapinpicture'
-        const event = new Event(eventName)
+        const event = typeof Event === 'function' ? new Event(eventName) : document.createEvent('Event')
         event.initEvent(eventName, true, true)
         img.dispatchEvent(event)
         if (event.defaultPrevented) {
             return null
         }
 
-        const document = this._options.window.document
         const picture = document.createElement('picture')
         img.parentNode.insertBefore(picture, img)
         img.parentNode.removeChild(img)
@@ -292,7 +294,7 @@ class TinyPictures {
     mergedOptions(img, overrideOptions) {
         const optionsString = img.getAttribute('data-tp-options')
         const options = optionsString ? JSON.parse(optionsString) : {}
-        return Object.assign({}, options, overrideOptions)
+        return assign({}, options, overrideOptions)
     }
 
     revealAttributes(element) {
