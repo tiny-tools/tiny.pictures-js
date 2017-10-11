@@ -346,7 +346,7 @@ var TinyPictures = function () {
             var self = this;
             jQuery.fn.tinyPictures = function () {
                 this.filter('img').each(function () {
-                    return self.unveil(this);
+                    return self.reveal(this);
                 });
                 return this;
             };
