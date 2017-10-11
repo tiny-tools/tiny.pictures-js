@@ -358,7 +358,7 @@ class TinyPictures {
         jQuery.fn.tinyPictures = function () {
             this.filter('img')
                 .each(function () {
-                    return self.unveil(this)
+                    return self.reveal(this)
                 })
             return this
         }
