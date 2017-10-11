@@ -33,6 +33,7 @@
     "url": "https://github.com/erkstruwe/tiny.pictures-js/issues"
   },
   "dependencies": {
+    "babel-preset-env": "^1.6.0",
     "lazysizes": "~4.0.0-rc3",
     "lodash": "^4.17.4",
     "sync-is-private-host": "^0.1.2",
@@ -42,7 +43,6 @@
     "babel-cli": "^6.23.0",
     "babel-eslint": "^7.1.1",
     "babel-loader": "^7.1.2",
-    "babel-preset-env": "^1.6.0",
     "eslint": "^4.6.1",
     "expose-loader": "^0.7.3",
     "express": "^4.14.1",
