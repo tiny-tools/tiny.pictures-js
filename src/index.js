@@ -138,6 +138,9 @@ class TinyPictures {
 
             this._options.window.document.addEventListener('lazybeforeunveil', (event) => {
                 const img = event.target
+                if (!img.classList.contains(this._options.lazySizesConfig.lazyClass)) {
+                    return
+                }
                 const noPicture = img.classList.contains('tp-nopicture')
 
                 const elementsToReveal = [img]

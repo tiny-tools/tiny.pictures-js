@@ -121,6 +121,9 @@ var TinyPictures = function () {
 
             this._options.window.document.addEventListener('lazybeforeunveil', function (event) {
                 var img = event.target;
+                if (!img.classList.contains(_this._options.lazySizesConfig.lazyClass)) {
+                    return;
+                }
                 var noPicture = img.classList.contains('tp-nopicture');
 
                 var elementsToReveal = [img];
