@@ -121,7 +121,7 @@ var TinyPictures = function () {
 
             this._options.window.document.addEventListener('lazybeforeunveil', function (event) {
                 var img = event.target;
-                if (!img.classList.contains(_this._options.lazySizesConfig.lazyClass)) {
+                if (!img.classList.contains('data-tp-src') && !img.classList.contains('data-tp-srcset')) {
                     return;
                 }
                 var noPicture = img.classList.contains('tp-nopicture');
