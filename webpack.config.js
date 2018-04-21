@@ -1,15 +1,14 @@
 const path = require('path')
 
 module.exports = {
-    devtool: 'source-map',
-    entry: './src/entry.js',
+    mode: 'development',
+    entry: {
+        browser: './src/browser.js'
+    },
     output: {
         path: path.join(__dirname, 'dist'),
-        filename: 'tiny.pictures.min.js'
-    },
-    module: {
-        loaders: [
-            {test: /\.js$/, loader: 'babel-loader'}
-        ]
+        filename: '[name].js',
+        library: 'TinyPictures',
+        libraryTarget: 'umd',
     }
 }

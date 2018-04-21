@@ -1,0 +1,10 @@
+extends layout
+
+block content
+    h1 lazyload
+
+    p: img.tp-lazyload(data-tp-src="https://tiny.pictures/example1.jpg" data-tp-sizes="auto" data-tp-options='{"quality": 5}')
+
+block scripts
+    script.
+        window.tinyPictures.lazyload()

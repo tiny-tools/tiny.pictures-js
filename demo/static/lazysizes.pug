@@ -1,0 +1,17 @@
+extends layout
+
+block head
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/4.0.2/lazysizes.min.js")
+
+block content
+    h1 lazysizes
+
+    h2 lazysizes library
+    p: img.img-fluid.lazyload(data-src="https://tiny.pictures/example1.jpg")
+
+    h2 tiny.pictures lazyload
+    p: img.img-fluid.tp-lazyload(data-tp-src="https://tiny.pictures/example1.jpg" data-tp-sizes="auto" data-tp-options='{"quality": 5}')
+
+block scripts
+    script.
+        window.tinyPictures.lazyload()

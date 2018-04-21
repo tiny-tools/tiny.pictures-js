@@ -1,0 +1,25 @@
+extends layout
+
+block content
+    h1 localhost
+
+    h2 Without overrideSources
+    p Gets redirected to the original localhost source by tiny.pictures server. Grayscale operation cannot be applied.
+    p: img.img-fluid(data-tp-src="example1.jpg")
+
+    h2 With overrideSources
+    p Uses a random replacement image from the overrideSources array. Grayscale operation can be applied.
+    p: img.img-fluid(data-tp-src="example1.jpg")
+
+block scripts
+    script.
+        var tinyPicturesWithoutOverrideSources = new TinyPictures({
+            user: 'demo',
+        })
+        var tinyPicturesWithOverrideSources = new TinyPictures({
+            user: 'demo',
+            overrideSourcesImages: 'cats',
+        })
+        var images = document.getElementsByTagName('img')
+        tinyPicturesWithoutOverrideSources.reveal(images[0], {grayscale: true})
+        tinyPicturesWithOverrideSources.reveal(images[1], {grayscale: true})

@@ -1,0 +1,16 @@
+extends layout
+
+block content
+    h1 reveal
+
+    h2 Without sizes
+    p: img.img-fluid(data-tp-src="https://tiny.pictures/example1.jpg")
+    h2 With sizes
+    p: img.img-fluid(data-tp-src="https://tiny.pictures/example1.jpg" data-tp-sizes="auto")
+
+block scripts
+    script.
+        var images = document.getElementsByTagName('img')
+        for (var i = 0; i < images.length; i++) {
+            window.tinyPictures.reveal(images[i])
+        }

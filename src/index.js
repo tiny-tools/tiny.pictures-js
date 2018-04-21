@@ -8,13 +8,12 @@ const range = require('lodash/range')
 const assign = require('lodash/assign')
 const isPrivate = require('sync-is-private-host').isPrivate
 
-class TinyPictures {
+module.exports = class TinyPicturesUniversal {
     constructor(options) {
         this._options = defaults(
             {},
             options,
             {
-                window: null,
                 user: null,
                 namedSources: [],
                 overrideSourcesImages: [],
@@ -126,45 +125,14 @@ class TinyPictures {
                 this._apiBaseUrlObject = urijs.parse(this._options.customSubdomain + this._options.user + '/')
                 break
         }
-
-        // lazySizes
-        if (typeof window !== 'undefined') {
-            const lazySizesBackup = window.lazySizes
-            const lazySizesConfigBackup = window.lazySizesConfig
-            window.lazySizesConfig = this._options.lazySizesConfig
-            this._lazySizes = require('lazysizes')
-            window.lazySizes = lazySizesBackup
-            window.lazySizesConfig = lazySizesConfigBackup
-
-            this._options.window.document.addEventListener('lazybeforeunveil', (event) => {
-                const img = event.target
-                if (!img.getAttribute('data-tp-src') && !img.getAttribute('data-tp-srcset')) {
-                    return
-                }
-                const noPicture = img.classList.contains('tp-nopicture')
-
-                const elementsToReveal = [img]
-                const picture = noPicture ? null : this.wrapInPicture(event.target)
-                if (picture) {
-                    const sources = picture.getElementsByTagName('source')
-                    for (let i = 0; i < sources.length; i++) {
-                        elementsToReveal.unshift(sources[i])
-                    }
-                }
-
-                elementsToReveal.forEach((elementToReveal) => this.revealAttributes(elementToReveal))
-            })
-        }
     }
 
     baseUrl() {
         if (this._options.defaultBaseUrl) {
             return this._options.defaultBaseUrl
-        } else if (this._options.window && this._options.window.location && this._options.window.location.href) {
-            return this._options.window.location.href
-        } else {
-            return ''
         }
+
+        return ''
     }
 
     url(source = '', options = {}, baseUrl = this.baseUrl()) {
@@ -172,13 +140,11 @@ class TinyPictures {
             return null
         }
 
-        let baseUrlObject = baseUrl ? urijs(baseUrl)
-            .normalize() : null
+        let baseUrlObject = baseUrl ? urijs(baseUrl).normalize() : null
         if (source.indexOf('//') === 0 && baseUrlObject) {
             source = baseUrlObject.protocol() + ':' + source
         }
-        let sourceObject = urijs(source)
-            .normalize()
+        let sourceObject = urijs(source).normalize()
         if ((!sourceObject.protocol() || !sourceObject.hostname()) && baseUrl) {
             sourceObject = sourceObject.absoluteTo(baseUrl)
         }
@@ -206,8 +172,7 @@ class TinyPictures {
         }
 
         // build urlObject
-        let urlObject = urijs(urlObjectParams)
-            .normalize()
+        let urlObject = urijs(urlObjectParams).normalize()
         forEach(options, (val, key) => {
             urlObject.addQuery(key, val)
         })
@@ -216,7 +181,6 @@ class TinyPictures {
         }
 
         return urlObject.toString()
-            .replace(/%7Bwidth%7D/gi, '{width}')
     }
 
     srcsetArray(originalSrc, options) {
@@ -246,126 +210,4 @@ class TinyPictures {
         img += '>'
         return img
     }
-
-    wrapInPicture(img) {
-        if (img.parentElement.nodeName.toLowerCase() === 'picture') {
-            return img.parentElement
-        }
-
-        const document = this._options.window.document
-
-        const eventName = 'tpbeforewrapinpicture'
-        const event = typeof Event === 'function' ? new Event(eventName) : document.createEvent('Event')
-        event.initEvent(eventName, true, true)
-        img.dispatchEvent(event)
-        if (event.defaultPrevented) {
-            return null
-        }
-
-        const picture = document.createElement('picture')
-        img.parentNode.insertBefore(picture, img)
-        img.parentNode.removeChild(img)
-        picture.appendChild(img)
-        // add source elements
-        const ie9Start = document.createComment('[if IE 9]><video style="display: none"><![endif]')
-        const ie9End = document.createComment('[if IE 9]></video><![endif]')
-        picture.insertBefore(ie9Start, img)
-        const webpSource = document.createElement('source')
-        webpSource.setAttribute('type', 'image/webp')
-        const source = document.createElement('source')
-        const attributes = [
-            'data-tp-src',
-            'data-tp-srcset',
-            'data-tp-sizes'
-        ]
-        const elements = [webpSource, source]
-        elements.forEach((element, index) => {
-            attributes.forEach((attribute) => {
-                const value = img.getAttribute(attribute)
-                if (value) {
-                    element.setAttribute(attribute, value)
-                }
-            })
-            const overrideOptions = index === 0 ? {format: 'webp'} : {}
-            element.setAttribute('data-tp-options', JSON.stringify(this.mergedOptions(img, overrideOptions)))
-            picture.insertBefore(element, img)
-        })
-        picture.insertBefore(ie9End, img)
-        return picture
-    }
-
-    mergedOptions(img, overrideOptions) {
-        const optionsString = img.getAttribute('data-tp-options')
-        const options = optionsString ? JSON.parse(optionsString) : {}
-        return assign({}, options, overrideOptions)
-    }
-
-    revealAttributes(element) {
-        // element can be either source or img
-        const isSource = element.nodeName.toLowerCase() === 'source'
-
-        element.setAttribute(
-            isSource ? 'srcset' : 'src',
-            this.url(
-                element.getAttribute('data-tp-src'),
-                this.mergedOptions(element)
-            )
-        )
-
-        const sizes = element.getAttribute('data-tp-sizes')
-        if (sizes) {
-            element.setAttribute(
-                'srcset',
-                this.srcsetArray(
-                    element.getAttribute('data-tp-src'),
-                    this.mergedOptions(element)
-                    )
-                    .join(', ')
-            )
-
-            if (sizes === 'auto') {
-                this._lazySizes.autoSizer.updateElem(element)
-            } else {
-                element.setAttribute('sizes', sizes)
-            }
-        }
-    }
-
-    reveal(element) {
-        if (element.classList.contains('tp-lazyloading') || element.classList.contains('tp-lazyloaded')) {
-            return
-        }
-
-        return this._lazySizes.loader.unveil(element)
-    }
-
-    revealAll() {
-        const document = this._options.window.document
-        var list = document.getElementsByTagName('img')
-        for (var i = 0; i < list.length; i++) {
-            this.reveal(list[i])
-        }
-    }
-
-    lazyload() {
-        this._lazySizes.init()
-    }
-
-    registerAngularJsModule(angular) {
-        angular.module('tiny.pictures', [])
-            .filter('tinyPicturesUrl', () => this.url.bind(this))
-    }
-
-    registerJQueryPlugin(jQuery) {
-        const self = this
-        jQuery.fn.tinyPictures = function () {
-            this.filter('img')
-                .each(function () {
-                    return self.reveal(this)
-                })
-            return this
-        }
-    }
 }
-
-module.exports = TinyPictures

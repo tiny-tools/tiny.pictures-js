@@ -2,55 +2,50 @@
   "name": "tiny.pictures-js",
   "version": "3.0.9",
   "description": "JavaScript library for tiny.pictures",
-  "main": "dist/index.js",
+  "main": "src/node.js",
   "scripts": {
     "lint": "eslint .",
     "unit": "jasmine JASMINE_CONFIG_PATH=jasmine.json",
     "test": "npm run lint && npm run unit",
-    "test:travis": "npm run test",
-    "build": "npm run build:node && npm run build:browser",
-    "build:node": "babel src/index.js --out-file dist/index.js",
-    "build:browser": "webpack -p",
-    "watch:browser": "webpack --watch",
-    "demo": "node demo",
-    "start": "npm run demo",
+    "test:travis": "npm test",
+    "build": "webpack --mode=production",
+    "start": "node demo",
     "preversion": "npm run build && npm test",
     "version": "git add --all",
     "postversion": "git push origin master && npm publish"
   },
   "engines": {
-    "node": "^8.4.0",
-    "npm": "^5.3.0"
+    "node": "^8.9.1",
+    "npm": "^5.5.1"
   },
-  "homepage": "https://github.com/erkstruwe/tiny.pictures-js#readme",
+  "homepage": "https://tiny.pictures/documentation/js-library",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/erkstruwe/tiny.pictures-js.git"
   },
-  "author": "Erk Struwe <estruwe@estruwe.de>",
+  "author": "Tiny Tools Microservices GmbH <team@tinytools.io>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/erkstruwe/tiny.pictures-js/issues"
   },
   "dependencies": {
-    "babel-preset-env": "^1.6.0",
-    "lazysizes": "~4.0.0-rc3",
-    "lodash": "^4.17.4",
+    "lazysizes": "^4.0.2",
+    "lodash": "^4.17.5",
     "sync-is-private-host": "^0.1.2",
-    "urijs": "^1.18.7"
+    "urijs": "^1.19.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.23.0",
-    "babel-eslint": "^7.1.1",
-    "babel-loader": "^7.1.2",
-    "eslint": "^4.6.1",
-    "expose-loader": "^0.7.3",
-    "express": "^4.14.1",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.6.1",
+    "eslint": "^4.19.1",
+    "express": "^4.16.3",
     "istanbul": "^0.4.5",
-    "jasmine": "^2.8.0",
-    "jsdom": "^11.2.0",
-    "serve-index": "^1.8.0",
-    "webpack": "^3.5.6",
-    "winston": "^2.3.1"
+    "jasmine": "^3.1.0",
+    "jsdom": "^11.8.0",
+    "pug": "^2.0.3",
+    "webpack": "^4.6.0",
+    "webpack-cli": "^2.0.15",
+    "webpack-dev-middleware": "^3.1.2",
+    "winston": "^2.4.2"
   }
 }

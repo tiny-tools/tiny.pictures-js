@@ -1,0 +1,22 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="utf-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
+        link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" crossorigin="anonymous")
+        block head
+
+    body.container-fluid
+        block content
+
+        script(src="browser.js")
+        script.
+            window.tinyPictures = new TinyPictures({
+                user: 'demo',
+                namedSources: [
+                    {name: 'main', url: 'https://tiny.pictures/'}
+                ],
+            })
+            console.log(window.tinyPictures)
+
+        block scripts

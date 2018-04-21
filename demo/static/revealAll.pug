@@ -1,0 +1,13 @@
+extends layout
+
+block content
+    h1 revealAll
+
+    h2 Without sizes
+    p: img.img-fluid(data-tp-src="https://tiny.pictures/example1.jpg")
+    h2 With sizes
+    p: img.img-fluid(data-tp-src="https://tiny.pictures/example1.jpg" data-tp-sizes="auto")
+
+block scripts
+    script.
+        window.tinyPictures.revealAll()
