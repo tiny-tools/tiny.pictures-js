@@ -2,7 +2,7 @@ const path = require('path')
 
 const express = require('express')
 const webpack = require('webpack')
-const webpackOptions = require('../webpack.config')
+const webpackOptions = require('../webpack.config')(null, {mode: 'development'})
 const webpackCompiler = webpack(webpackOptions)
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const logger = require('winston')
