@@ -1,3 +1,4 @@
+// const picturefill = require('picturefill')
 const assign = require('lodash/assign')
 
 const TinyPicturesUniversal = require('./index')
@@ -17,12 +18,14 @@ module.exports = class TinyPictures extends TinyPicturesUniversal {
             if (!img.getAttribute('data-tp-src') && !img.getAttribute('data-tp-srcset')) {
                 return
             }
-            const noPicture = img.hasAttribute('tp-nopicture') || img.classList.contains('tp-nopicture') // class for legacy reasons
 
+            let element = img
             const elementsToReveal = [img]
-            const picture = noPicture ? null : this.wrapInPicture(event.target)
-            if (picture) {
-                const sources = picture.getElementsByTagName('source')
+
+            const noPicture = img.hasAttribute('tp-nopicture') || img.classList.contains('tp-nopicture') // class for legacy reasons
+            if (!noPicture) {
+                element = this.wrapInPicture(img)
+                const sources = element.getElementsByTagName('source')
                 for (let i = 0; i < sources.length; i++) {
                     elementsToReveal.unshift(sources[i])
                 }
@@ -44,8 +47,6 @@ module.exports = class TinyPictures extends TinyPicturesUniversal {
         if (img.parentElement.nodeName.toLowerCase() === 'picture') {
             return img.parentElement
         }
-
-        const document = window.document
 
         const eventName = 'tpbeforewrapinpicture'
         const event = typeof Event === 'function' ? new Event(eventName) : document.createEvent('Event')
@@ -96,16 +97,8 @@ module.exports = class TinyPictures extends TinyPicturesUniversal {
     revealAttributes(element) {
         // element can be either source or img
         const isSource = element.nodeName.toLowerCase() === 'source'
-
-        element.setAttribute(
-            isSource ? 'srcset' : 'src',
-            this.url(
-                element.getAttribute('data-tp-src'),
-                this.mergedOptions(element)
-            )
-        )
-
         const sizes = element.getAttribute('data-tp-sizes')
+
         if (sizes) {
             element.setAttribute(
                 'srcset',
@@ -121,6 +114,16 @@ module.exports = class TinyPictures extends TinyPicturesUniversal {
             } else {
                 element.setAttribute('sizes', sizes)
             }
+        }
+
+        if(!sizes && isSource || !isSource) {
+            element.setAttribute(
+                isSource ? 'srcset' : 'src',
+                this.url(
+                    element.getAttribute('data-tp-src'),
+                    this.mergedOptions(element)
+                )
+            )
         }
     }
 

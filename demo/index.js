@@ -28,6 +28,7 @@ app.get('/lazysizes', (req, res) => res.render('./static/lazysizes.pug'))
 app.get('/localhost', (req, res) => res.render('./static/localhost.pug'))
 app.get('/reveal', (req, res) => res.render('./static/reveal.pug'))
 app.get('/revealAll', (req, res) => res.render('./static/revealAll.pug'))
+app.get('/revealSingle', (req, res) => res.render('./static/revealSingle.pug'))
 
 app.listen(port, (e) => {
     if (e) {
