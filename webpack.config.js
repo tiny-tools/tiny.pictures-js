@@ -1,9 +1,10 @@
 const path = require('path')
 
 module.exports = function (env, argv) {
+    const mode = argv.mode
+
     return {
-        mode: argv.mode,
-        devtool: argv.mode === 'production' ? 'source-map' : 'cheap-module-eval-source-map',
+        mode,
         entry: {
             browser: './src/browser.js'
         },
@@ -21,7 +22,7 @@ module.exports = function (env, argv) {
                     use: {
                         loader: 'babel-loader',
                         options: {
-                            presets: ['babel-preset-env'],
+                            presets: ['@babel/preset-env'],
                         },
                     },
                 },

@@ -35,5 +35,5 @@ app.listen(port, (e) => {
         return logger.error(e)
     }
 
-    return logger.info('listening in port', port)
+    return logger.info('listening on port', port)
 })
