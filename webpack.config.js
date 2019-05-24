@@ -1,8 +1,6 @@
 const path = require('path')
 
-module.exports = function (env, argv) {
-    const mode = argv.mode
-
+module.exports = function (env, {mode}) {
     return {
         mode,
         entry: {

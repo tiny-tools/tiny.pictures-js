@@ -176,7 +176,11 @@ module.exports = class TinyPicturesUniversal {
         forEach(options, (val, key) => {
             urlObject.addQuery(key, val)
         })
-        if (!namedSource) {
+        if (namedSource) {
+            if (sourceObject.query()) {
+                urlObject.addQuery('queryString', sourceObject.query())
+            }
+        } else {
             urlObject.addQuery('source', sourceUrl)
         }
 
