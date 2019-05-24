@@ -1,4 +1,5 @@
 const urijs = require('urijs')
+const qs = require('qs')
 const defaults = require('lodash/defaults')
 const forEach = require('lodash/forEach')
 const find = require('lodash/find')
@@ -178,7 +179,7 @@ module.exports = class TinyPicturesUniversal {
         })
         if (namedSource) {
             if (sourceObject.query()) {
-                urlObject.addQuery('queryString', sourceObject.query())
+                urlObject.query(qs.stringify(assign({}, urlObject.query(true), {query: sourceObject.query(true)})))
             }
         } else {
             urlObject.addQuery('source', sourceUrl)

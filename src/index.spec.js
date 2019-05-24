@@ -107,13 +107,13 @@ describe('TinyPictures', function () {
             const baseUrl = 'https://tiny.pictures/path/to'
             expect(this.tinyPictures.url('/example1.jpg')).toBe(this.tinyPictures.url('/example1.jpg', null, baseUrl))
         })
-        it('should use the queryString parameter', function() {
+        it('should use the query parameter', function() {
             this.tinyPictures = new TinyPictures({
                 user: 'demo',
                 customSubdomain: true,
                 namedSources: [{name: 'main', url: 'https://tiny.pictures'}]
             })
-            expect(this.tinyPictures.url('https://tiny.pictures/example1.jpg?versionID=abcdef&test=1')).toBe('https://demo.tiny.pictures/main/example1.jpg?queryString=versionID%3Dabcdef%26test%3D1')
+            expect(this.tinyPictures.url('https://tiny.pictures/example1.jpg?versionID=abcdef&test=1')).toBe('https://demo.tiny.pictures/main/example1.jpg?query%5BversionID%5D=abcdef&query%5Btest%5D=1')
         })
     })
 

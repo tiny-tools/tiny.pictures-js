@@ -12,5 +12,5 @@ JavaScript SDK for [tiny.pictures](https://tiny.pictures/)
 Visit https://tiny.pictures/documentation/js-library for demos and details.
 
 ## Changelog
-### 4.2.0
-Added support for queryString parameter to enable fetching original image URLs containing queryString even via named sources.
+### 4.2.1
+Added support for query parameter to enable fetching original image URLs containing query strings even via named sources.
