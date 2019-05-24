@@ -7,6 +7,7 @@ const startsWith = require('lodash/startsWith')
 const sample = require('lodash/sample')
 const range = require('lodash/range')
 const assign = require('lodash/assign')
+const merge = require('lodash/merge')
 const isPrivate = require('sync-is-private-host').isPrivate
 
 module.exports = class TinyPicturesUniversal {
@@ -179,7 +180,7 @@ module.exports = class TinyPicturesUniversal {
         })
         if (namedSource) {
             if (sourceObject.query()) {
-                urlObject.query(qs.stringify(assign({}, urlObject.query(true), {query: sourceObject.query(true)})))
+                urlObject.query(qs.stringify(merge({}, urlObject.query(true), {query: sourceObject.query(true)})))
             }
         } else {
             urlObject.addQuery('source', sourceUrl)

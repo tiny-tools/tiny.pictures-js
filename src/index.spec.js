@@ -113,7 +113,8 @@ describe('TinyPictures', function () {
                 customSubdomain: true,
                 namedSources: [{name: 'main', url: 'https://tiny.pictures'}]
             })
-            expect(this.tinyPictures.url('https://tiny.pictures/example1.jpg?versionID=abcdef&test=1')).toBe('https://demo.tiny.pictures/main/example1.jpg?query%5BversionID%5D=abcdef&query%5Btest%5D=1')
+            expect(this.tinyPictures.url('https://tiny.pictures/example1.jpg?version=abcdef&test=1')).toBe('https://demo.tiny.pictures/main/example1.jpg?query%5Bversion%5D=abcdef&query%5Btest%5D=1')
+            expect(this.tinyPictures.url('https://tiny.pictures/example1.jpg?version=abcdef&test=1', {width: 200})).toBe('https://demo.tiny.pictures/main/example1.jpg?width=200&query%5Bversion%5D=abcdef&query%5Btest%5D=1')
         })
     })
 
