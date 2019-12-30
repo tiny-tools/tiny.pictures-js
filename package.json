@@ -1,6 +1,6 @@
 {
   "name": "tiny.pictures-js",
-  "version": "4.2.2",
+  "version": "4.2.3",
   "description": "JavaScript library for tiny.pictures",
   "main": "src/node.js",
   "scripts": {
