@@ -15,8 +15,8 @@
     "postversion": "git push origin master && npm publish"
   },
   "engines": {
-    "node": "^8.9.1",
-    "npm": "^5.5.1"
+    "node": "^12.0.0",
+    "npm": "^6.0.0"
   },
   "homepage": "https://tiny.pictures/documentation/js-library",
   "repository": {
@@ -30,25 +30,25 @@
   },
   "dependencies": {
     "lazysizes": "^4.1.6",
-    "lodash": "^4.17.11",
-    "qs": "^6.7.0",
+    "lodash": "^4.17.21",
+    "qs": "^6.10.3",
     "sync-is-private-host": "^0.1.2",
-    "urijs": "^1.19.1"
+    "urijs": "^1.19.10"
   },
   "devDependencies": {
-    "@babel/core": "^7.7.7",
-    "@babel/preset-env": "^7.7.7",
-    "@types/jasmine": "^3.5.0",
-    "babel-loader": "^8.0.6",
+    "@babel/core": "^7.17.5",
+    "@babel/preset-env": "^7.16.11",
+    "@types/jasmine": "^3.10.3",
+    "babel-loader": "^8.2.3",
     "eslint": "^5.16.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "istanbul": "^0.4.5",
-    "jasmine": "^3.5.0",
+    "jasmine": "^3.99.0",
     "jsdom": "^15.2.1",
     "pug": "^2.0.4",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10",
-    "webpack-dev-middleware": "^3.7.2",
-    "winston": "^2.4.4"
+    "webpack": "^4.46.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-middleware": "^3.7.3",
+    "winston": "^2.4.5"
   }
 }
