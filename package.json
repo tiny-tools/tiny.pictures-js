@@ -12,7 +12,7 @@
     "start": "node demo",
     "preversion": "npm run build && npm test",
     "version": "git add --all",
-    "postversion": "git push origin master && npm publish"
+    "postversion": "git push origin master --follow-tags && npm publish"
   },
   "engines": {
     "node": ">=12.0.0",
