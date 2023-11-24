@@ -32,7 +32,7 @@
     "lazysizes": "^4.1.6",
     "lodash": "^4.17.21",
     "qs": "^6.10.3",
-    "sync-is-private-host": "^0.1.2",
+    "sync-is-private-host": "^1.0.0",
     "urijs": "^1.19.10"
   },
   "devDependencies": {
