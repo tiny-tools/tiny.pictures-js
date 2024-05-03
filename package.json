@@ -29,7 +29,7 @@
     "url": "https://github.com/erkstruwe/tiny.pictures-js/issues"
   },
   "dependencies": {
-    "lazysizes": "^4.1.6",
+    "lazysizes": "^5.3.2",
     "lodash": "^4.17.21",
     "qs": "^6.10.3",
     "sync-is-private-host": "^1.0.0",
@@ -44,7 +44,7 @@
     "express": "^4.17.3",
     "istanbul": "^0.4.5",
     "jasmine": "^4.5.0",
-    "jsdom": "^15.2.1",
+    "jsdom": "^24.0.0",
     "pug": "^3.0.2",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
